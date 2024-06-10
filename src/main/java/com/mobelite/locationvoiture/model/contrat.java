@@ -1,6 +1,7 @@
 package com.mobelite.locationvoiture.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
 
@@ -10,9 +11,10 @@ import java.util.Date;
 @Entity
 @Table
 public class contrat {
+    @Id
     private Long id;
-    private Date startDate;
-    private Date endDate;
-    
+
+    //reservation reservation;
+
 
 }

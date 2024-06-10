@@ -1,7 +1,6 @@
 package com.mobelite.locationvoiture.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Data
@@ -9,4 +8,10 @@ import lombok.*;
 @Entity
 @Table
 public class notification {
+    @Id
+    private Long id;
+    private String message;
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private user user;
 }

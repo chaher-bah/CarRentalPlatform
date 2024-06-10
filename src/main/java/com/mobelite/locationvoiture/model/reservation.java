@@ -14,12 +14,12 @@ public class reservation {
     @GeneratedValue
     private Long id;
     private Long carId;
-    private Long clientId;
     private LocalDate startDate;
     private LocalDate endDate;
     @Enumerated (EnumType.STRING)
     private reservationStatus reservationStatus;
     @ManyToOne
+    @JoinColumn(name = "clientId")
     private client client;
 
 }

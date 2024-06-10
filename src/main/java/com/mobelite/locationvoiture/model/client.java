@@ -15,9 +15,9 @@ import java.util.List;
 public class client extends user{
     private String CIN;
     private int numTel;
-    @OneToMany
+    @OneToMany(mappedBy = "client")
     private List<reservation> reservations;
     @Lob
-    private byte[] photo;
+    private byte[] photoPermis;
 
 }
