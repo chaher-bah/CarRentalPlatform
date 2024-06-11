@@ -22,8 +22,6 @@ public class User implements Serializable {
     private String nom;
     private String prenom;
     private String email;
-    @OneToMany
-    private List<Notification> notifications;
 
 }
 

@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface carRepository extends JpaRepository<Car, Integer> {
-    List<Car> findByMarque(String marque);
+    Car findbyMarque(String marque);
 }

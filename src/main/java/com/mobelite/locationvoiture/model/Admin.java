@@ -8,6 +8,9 @@ import lombok.*;
 import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table (name = "admins")
 public class Admin extends User {
