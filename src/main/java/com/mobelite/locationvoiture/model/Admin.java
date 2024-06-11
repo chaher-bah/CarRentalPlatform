@@ -8,12 +8,10 @@ import lombok.*;
 import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
-
-
 @Entity
 @Table
-public class admin extends user{
+public class Admin extends User {
     private String localisation;
     @OneToMany
-    private List<car> cars;
+    private List<Car> Cars;
 }

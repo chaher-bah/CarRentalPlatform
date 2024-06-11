@@ -1,19 +1,17 @@
 package com.mobelite.locationvoiture.model;
 
 import jakarta.persistence.*;
-import lombok.*;
-
+import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
-
+@Table(name = "cars")
 @Entity
-@Table(name = "car")
-public class car {
+public class Car {
     @Id
     private Long id;
-    private  String VIN;
+    private  String vin;
     private String marque;
     private String modele;
     @Column(name = "prixPN")/*prix par nuit*/

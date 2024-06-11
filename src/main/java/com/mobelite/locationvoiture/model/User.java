@@ -1,18 +1,15 @@
 package com.mobelite.locationvoiture.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.NonNull;
 
 import java.util.List;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 @Data
 @Entity
-@Table
-public class user {
+@Table(name = "users")
+public class User {
     @Id
     @GeneratedValue
     private Long id;
@@ -20,7 +17,7 @@ public class user {
     private String prenom;
     private String email;
     @OneToMany
-    private List<notification> notifications;
+    private List<Notification> notifications;
 
 }
 
