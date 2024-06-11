@@ -17,7 +17,7 @@ public class Client extends User {
     @OneToMany(targetEntity = Reservation.class)
     private List<Reservation> reservations;
     @Lob
-    private byte[] photoPermis;
+    private byte[] photoPermis; 
     @OneToMany(targetEntity = Notification.class)
     private List<Notification> notifications;
 

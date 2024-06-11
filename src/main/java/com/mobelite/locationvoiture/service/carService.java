@@ -8,12 +8,13 @@ import java.util.Optional;
 
 public interface carService {
     public void save(Car car);
-    public Optional<Car> getCar(int id);
+    public Optional<Car> getCar(Long id);
     public List<Car> getAllCars();
     public void deleteCar(Car car);
     public List<Car> getCarsbymarque(String marque);
-    public List<Car> getCarsByAvailability();
+    public List<Car> getCarsByDisponibilite();
     public List<Car> getCarsByPrice(BigDecimal price);
-
+    public void updateDisponibiliteToFalse(Car car);
+    public void updateDisponibiliteToTrue(Car car);
 
 }
