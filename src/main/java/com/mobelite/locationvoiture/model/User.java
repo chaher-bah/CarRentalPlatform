@@ -1,15 +1,21 @@
 package com.mobelite.locationvoiture.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
+import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
-@Entity
-@Table(name = "users")
-public class User {
+
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@MappedSuperclass
+public class User implements Serializable {
     @Id
     @GeneratedValue
     private Long id;

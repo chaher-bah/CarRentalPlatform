@@ -11,9 +11,11 @@ import java.util.List;
 public class Client extends User {
     private String cin;
     private String numTel;
-    @OneToMany(mappedBy = "client")
+    @OneToMany(targetEntity = Reservation.class)
     private List<Reservation> reservations;
     @Lob
     private byte[] photoPermis;
+    @OneToMany(targetEntity = Notification.class)
+    private List<Notification> notifications;
 
 }

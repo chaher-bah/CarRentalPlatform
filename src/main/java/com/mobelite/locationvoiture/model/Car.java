@@ -24,4 +24,9 @@ public class Car {
     private LocalDate dateExpAssurance;
     @Column(name = "dispo")
     private Boolean disponibilite;
+    @ManyToOne(targetEntity = Admin.class)
+    @JoinColumn(name = "Admin_id")
+    private Admin admin;
+    @OneToOne(targetEntity = Reservation.class)
+    private Reservation reservation;
 }

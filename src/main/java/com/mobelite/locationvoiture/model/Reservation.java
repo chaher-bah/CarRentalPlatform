@@ -17,8 +17,7 @@ public class Reservation {
     private LocalDateTime endDate;
     @Enumerated (EnumType.STRING)
     private reservationStatus reservationStatus;
-    @ManyToOne
+    @ManyToOne(targetEntity = Client.class)
     @JoinColumn(name = "client_id")
     private Client client;
-
 }

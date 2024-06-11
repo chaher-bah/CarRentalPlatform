@@ -9,9 +9,11 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-@Table
+@Table (name = "admins")
 public class Admin extends User {
     private String localisation;
-    @OneToMany
+    @OneToMany(targetEntity = Car.class)
     private List<Car> Cars;
+    @OneToMany(targetEntity = Notification.class)
+    private List<Notification> notifications;
 }

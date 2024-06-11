@@ -11,7 +11,10 @@ public class Notification {
     @Id
     private Long id;
     private String message;
-    @ManyToOne(targetEntity = User.class)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToOne(targetEntity = Client.class)
+    @JoinColumn(name = "client_id")
+    private Client client;
+    @ManyToOne(targetEntity = Admin.class)
+    @JoinColumn(name = "Admin_id")
+    private Admin admin;
 }
