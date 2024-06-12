@@ -16,7 +16,7 @@ public class AdminDto {
     private String localisation;
     private List<CarDto> Cars;
     private List<NotificationDto> notifications;
-    public AdminDto fromEntity(Admin admin) {
+    public static AdminDto fromEntity(Admin admin) {
         if (admin == null){
             //to do exception
             return null;
@@ -30,7 +30,7 @@ public class AdminDto {
                 .build();
     }
     //dto---> entity
-    public Admin toEntity(AdminDto AdminDto) {
+    public static Admin toEntity(AdminDto AdminDto) {
         if (AdminDto == null){
             return null;
         }

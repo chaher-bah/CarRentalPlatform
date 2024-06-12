@@ -22,7 +22,7 @@ public class ClientDto {
     private byte[] photoPermis;
 
     private List<NotificationDto> notifications;
-    public ClientDto fromEntity(Client client) {
+    public static ClientDto fromEntity(Client client) {
         if (client == null){
             //to do exception
             return null;
@@ -38,7 +38,7 @@ public class ClientDto {
                 .build();
     }
     //dto---> entity
-    public Client toEntity(ClientDto clientDto) {
+    public static Client toEntity(ClientDto clientDto) {
         if (clientDto == null){
             return null;
         }

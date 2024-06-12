@@ -29,7 +29,7 @@ public class ReservationDto {
         }
         return BigDecimal.ZERO;
     }
-    public ReservationDto fromEntity(Reservation reservation) {
+    public static ReservationDto fromEntity(Reservation reservation) {
         if (reservation == null){
             //to do exception
             return null;
@@ -43,7 +43,7 @@ public class ReservationDto {
                 .build();
     }
     //dto---> entity
-    public Reservation toEntity(ReservationDto reservationDto) {
+    public static Reservation toEntity(ReservationDto reservationDto) {
         if (reservationDto == null){
             return null;
         }

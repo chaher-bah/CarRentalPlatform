@@ -24,10 +24,10 @@ public interface carRepository extends JpaRepository<Car, Long> {
     @Modifying
     @Transactional
     @Query("UPDATE Car c SET c.disponibilite = true WHERE c.id = ?1")
-    void updateDisponibiliteToTrue(Car car);
+    void updateDisponibiliteToTrue(Long carId);
 
     @Modifying
     @Transactional
     @Query("UPDATE Car c SET c.disponibilite = false WHERE c.id = ?1")
-    void updateDisponibiliteToFalse(Car car);
+    void updateDisponibiliteToFalse(Long carId);
 }

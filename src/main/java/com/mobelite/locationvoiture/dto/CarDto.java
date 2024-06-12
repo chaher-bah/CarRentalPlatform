@@ -17,7 +17,7 @@ public class CarDto {
     private byte[] image;
    private Boolean disponibilite;
    private AdminDto admin;
-   public CarDto fromEntity(Car car) {
+   public static CarDto fromEntity(Car car) {
         if (car == null){
             //to do exception
             return null;
@@ -33,7 +33,7 @@ public class CarDto {
                 .build();
     }
     //dto---> entity
-    public Car toEntity(CarDto carDto) {
+    public static Car toEntity(CarDto carDto) {
         if (carDto == null){
             return null;
         }

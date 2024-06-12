@@ -13,7 +13,7 @@ public class NotificationDto {
     private AdminDto admin;
 
     //methode pour retourner une dto en donnant une entitee
-    public NotificationDto fromEntity(Notification notification) {
+    public static NotificationDto fromEntity(Notification notification) {
         if (notification == null){
             //to do exception
             return null;
@@ -24,7 +24,7 @@ public class NotificationDto {
                 .build();
     }
     //dto---> entity
-    public Notification toEntity(NotificationDto notificationDto) {
+    public static Notification toEntity(NotificationDto notificationDto) {
         if (notificationDto == null){
             return null;
         }
