@@ -11,7 +11,6 @@ import java.util.List;
 
 @Data
 
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
