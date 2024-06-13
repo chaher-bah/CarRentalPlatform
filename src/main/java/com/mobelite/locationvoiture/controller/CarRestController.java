@@ -72,4 +72,11 @@ public class CarRestController {
     public void deleteCar(@PathVariable("carid")Long carId){
         carservice.deleteCar(carId);
     }
+    /*
+    *@change the price of a car
+     */
+    @PatchMapping(value = APP_ROUTE+"/cars/{carid}/update/{price}")
+    public ResponseEntity<CarDto> updatePrice(@PathVariable("carid") Long carId,@PathVariable("price") BigDecimal price){
+        return new ResponseEntity<>(carservice.updateCarPrice(carId,price),HttpStatus.OK);
+    }
 }

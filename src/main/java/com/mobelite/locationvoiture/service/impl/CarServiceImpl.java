@@ -103,17 +103,31 @@ public class CarServiceImpl implements CarService {
     public void updateDisponibiliteToFalse(Long carId) {
         if (carId == null){
             log.error("Car id is null cannot update disponibilite to false");
-            return;
+            throw new EntityNotValidException("Car id is null cannot update disponibilite to false",ErrorCodes.CAR_NOT_VALID);
         }
         carRepository.updateDisponibiliteToFalse(carId);
+    }
+
+    @Override
+    public CarDto updateCarPrice(Long carId, BigDecimal price) {
+        if (carId == null){
+            log.error("Car id is null cannot update price");
+            throw new EntityNotValidException("Car id is null cannot update the price",ErrorCodes.CAR_NOT_VALID);
+        }
+        CarDto cardto = getCar(carId);
+        cardto.setFraisLocation(price);
+        return CarDto.fromEntity(carRepository.save(CarDto.toEntity(cardto)));
     }
 
     @Override
     public void updateDisponibiliteToTrue(Long carId) {
         if (carId == null){
             log.error("Car id is null cannot update disponibilite to true");
-            return;
+            throw new EntityNotValidException("Car id is null cannot update disponibilite to true",ErrorCodes.CAR_NOT_VALID);
         }
+        /*CarDto cardto = getCar(carId);
+        *cardto.setDisponibilite(true);
+        *carRepository.save(CarDto.toEntity(cardto));*/
         carRepository.updateDisponibiliteToTrue(carId);
     }
 

@@ -15,5 +15,5 @@ public interface CarService {
     List<CarDto> getCarsByPrice(BigDecimal price);
     void updateDisponibiliteToFalse(Long carId);
     void updateDisponibiliteToTrue(Long carId);
-
+    CarDto updateCarPrice(Long carId, BigDecimal price);
 }
