@@ -8,7 +8,7 @@ import com.mobelite.locationvoiture.repository.adminRepository;
 
 import com.mobelite.locationvoiture.model.Admin;
 import com.mobelite.locationvoiture.model.Car;
-import com.mobelite.locationvoiture.service.adminService;
+import com.mobelite.locationvoiture.service.AdminService;
 import com.mobelite.locationvoiture.validators.AdminValidator;
 import com.mobelite.locationvoiture.validators.CarValidator;
 import lombok.extern.slf4j.Slf4j;
@@ -21,11 +21,11 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class adminServiceImpl implements adminService {
+public class AdminServiceImpl implements AdminService {
     private final adminRepository adminRepository;
 
     @Autowired
-    public adminServiceImpl(adminRepository adminRepository) {
+    public AdminServiceImpl(adminRepository adminRepository) {
         this.adminRepository = adminRepository;
     }
     @Override

@@ -16,6 +16,7 @@ public class AdminDto {
     private String localisation;
     private List<CarDto> Cars;
     private List<NotificationDto> notifications;
+
     public static AdminDto fromEntity(Admin admin) {
         if (admin == null){
             //to do exception

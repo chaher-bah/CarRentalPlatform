@@ -1,14 +1,12 @@
 package com.mobelite.locationvoiture.service.impl;
 
-import com.mobelite.locationvoiture.dto.CarDto;
 import com.mobelite.locationvoiture.dto.NotificationDto;
 import com.mobelite.locationvoiture.exception.EntityNotFoundException;
 import com.mobelite.locationvoiture.exception.EntityNotValidException;
 import com.mobelite.locationvoiture.exception.ErrorCodes;
 import com.mobelite.locationvoiture.repository.notificationRepository;
 import com.mobelite.locationvoiture.model.Notification;
-import com.mobelite.locationvoiture.service.notificationService;
-import com.mobelite.locationvoiture.validators.CarValidator;
+import com.mobelite.locationvoiture.service.NotificationService;
 import com.mobelite.locationvoiture.validators.NotificationValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +18,10 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class notificationServiceImpl implements notificationService {
+public class NotificationServiceImpl implements NotificationService {
     private final notificationRepository notificationRepository;
     @Autowired
-    public notificationServiceImpl(notificationRepository notificationRepository){
+    public NotificationServiceImpl(notificationRepository notificationRepository){
         this.notificationRepository = notificationRepository;
     }
 

@@ -1,17 +1,14 @@
 package com.mobelite.locationvoiture.service.impl;
 
-import com.mobelite.locationvoiture.dto.CarDto;
 import com.mobelite.locationvoiture.dto.ClientDto;
 import com.mobelite.locationvoiture.dto.ReservationDto;
 import com.mobelite.locationvoiture.exception.EntityNotFoundException;
 import com.mobelite.locationvoiture.exception.EntityNotValidException;
 import com.mobelite.locationvoiture.exception.ErrorCodes;
-import com.mobelite.locationvoiture.model.Car;
 import com.mobelite.locationvoiture.model.Client;
 import com.mobelite.locationvoiture.model.Reservation;
 import com.mobelite.locationvoiture.repository.clientRepository;
-import com.mobelite.locationvoiture.service.clientService;
-import com.mobelite.locationvoiture.validators.CarValidator;
+import com.mobelite.locationvoiture.service.ClientService;
 import com.mobelite.locationvoiture.validators.ClientValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +21,11 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class clientServiceImpl implements clientService {
+public class ClientServiceImpl implements ClientService {
     private final clientRepository clientRepository;
 
     @Autowired
-    public clientServiceImpl(clientRepository clientRepository){
+    public ClientServiceImpl(clientRepository clientRepository){
         this.clientRepository = clientRepository;
     }
     @Override

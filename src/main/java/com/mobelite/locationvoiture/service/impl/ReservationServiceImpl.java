@@ -8,7 +8,7 @@ import com.mobelite.locationvoiture.model.Car;
 import com.mobelite.locationvoiture.model.Client;
 import com.mobelite.locationvoiture.model.Reservation;
 import com.mobelite.locationvoiture.repository.reservationRepository;
-import com.mobelite.locationvoiture.service.reservationService;
+import com.mobelite.locationvoiture.service.ReservationService;
 import com.mobelite.locationvoiture.validators.ReservationValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +21,10 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class reservationServiceImpl implements reservationService {
+public class ReservationServiceImpl implements ReservationService {
     private final reservationRepository reservationRepository;
     @Autowired
-    public reservationServiceImpl(reservationRepository reservationRepository) {
+    public ReservationServiceImpl(reservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
     }
 

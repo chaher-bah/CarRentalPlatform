@@ -6,7 +6,7 @@ import com.mobelite.locationvoiture.exception.EntityNotValidException;
 import com.mobelite.locationvoiture.exception.ErrorCodes;
 import com.mobelite.locationvoiture.model.Car;
 import com.mobelite.locationvoiture.repository.carRepository;
-import com.mobelite.locationvoiture.service.carService;
+import com.mobelite.locationvoiture.service.CarService;
 import com.mobelite.locationvoiture.validators.CarValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,18 +14,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class carServiceImpl implements carService {
+public class CarServiceImpl implements CarService {
     private final carRepository carRepository;
 
     @Autowired
-    public carServiceImpl(carRepository carRepository) {
+    public CarServiceImpl(carRepository carRepository) {
         this.carRepository = carRepository;
     }
     @Override
@@ -59,6 +58,10 @@ public class carServiceImpl implements carService {
         if (carID == null){
             log.error("Car id is null cannot delete car");
             return;
+        }
+        if (!carRepository.existsById(carID)){
+            log.error("car with this id don't exist");
+            throw new EntityNotFoundException("La voiture avec l'ID "+carID+"n'esxicte pas dans le BD",ErrorCodes.CAR_NOT_FOUND);
         }
         carRepository.deleteById(carID);
     }
