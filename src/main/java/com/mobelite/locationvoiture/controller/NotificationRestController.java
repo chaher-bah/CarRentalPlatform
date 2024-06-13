@@ -23,21 +23,34 @@ public class NotificationRestController {
     public ResponseEntity<NotificationDto> save(@RequestBody NotificationDto notification){
         return new ResponseEntity<>(notificationService.save(notification),HttpStatus.CREATED);
     }
+    /*
+    @Get all the notification send
+    *an admin role
+     */
     @PreAuthorize("hasRole('Admin_Role')")
     @GetMapping(APP_ROUTE+"/notification/all")
     public ResponseEntity<List<NotificationDto>> getAll(){
         return new ResponseEntity<>(notificationService.getAll(),HttpStatus.OK);
     }
+    /*
+    @get any notification by its id
+    *an admin role
+     */
     @PreAuthorize("hasRole('Admin_Role')")
     @GetMapping(APP_ROUTE+"/notification/{notifid}")
     public ResponseEntity<NotificationDto> getById(@PathVariable("notifid") Long id){
         return new ResponseEntity<>(notificationService.getById(id),HttpStatus.OK);
     }
+    /*
+    @get a specified client's notification
+     */
     @GetMapping(APP_ROUTE+"/notification/clients/{clientid}")
     public ResponseEntity<List<NotificationDto>> getByClient(@PathVariable("clientid") Long clientId){
         return new ResponseEntity<>(notificationService.getByClient(clientId),HttpStatus.OK);
     }
-
+    /*
+    @get a specified admin's notification
+     */
     @PreAuthorize("hasRole('Admin_Role')")
     @GetMapping(APP_ROUTE+"/notification/admins/{adminid}")
     public ResponseEntity<List<NotificationDto>> getByAdmin(@PathVariable("adminid") Long adminId){

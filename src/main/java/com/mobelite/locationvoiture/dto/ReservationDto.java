@@ -31,7 +31,6 @@ public class ReservationDto {
     }
     public static ReservationDto fromEntity(Reservation reservation) {
         if (reservation == null){
-            //to do exception
             return null;
         }
         return ReservationDto.builder()
@@ -39,7 +38,6 @@ public class ReservationDto {
                 .startDate(reservation.getStartDate())
                 .endDate(reservation.getEndDate())
                 .reservationStatus(reservation.getReservationStatus())
-                .fraisAPayer(getFraisAPayer())
                 .build();
     }
     //dto---> entity
@@ -53,6 +51,10 @@ public class ReservationDto {
                 .endDate(reservationDto.getEndDate())
                 .reservationStatus(reservationDto.getReservationStatus())
                 .build();
+    }
+    //check si la reservation est confirmee
+    public boolean isAccepted(){
+        return reservationStatus.ACCEPTEE.equals(this.reservationStatus);
     }
 
 }

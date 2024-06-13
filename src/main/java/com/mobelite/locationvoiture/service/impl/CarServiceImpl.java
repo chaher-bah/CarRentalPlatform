@@ -70,7 +70,7 @@ public class CarServiceImpl implements CarService {
     public List<CarDto> getCarsbymarque(String marque) {
         if (!StringUtils.hasLength(marque)){
             log.error("Car Marque is null");
-            return null;
+            throw new EntityNotValidException("le marque de voiture n'est pas valide",ErrorCodes.CAR_NOT_VALID);
         }
         List<Car> cars =carRepository.findbyMarqueIn(List.of(marque));
         if (cars == null || cars.isEmpty()){
