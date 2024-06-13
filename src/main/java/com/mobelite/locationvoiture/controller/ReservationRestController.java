@@ -4,6 +4,8 @@ import com.mobelite.locationvoiture.model.Car;
 import com.mobelite.locationvoiture.model.Client;
 import com.mobelite.locationvoiture.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,19 +23,19 @@ public class ReservationRestController {
         this.reservationService = reservationService;
     }
     @PostMapping(APP_ROUTE+"/reservation/ajouter")
-    public ReservationDto save(@RequestBody ReservationDto reservation){
-        return reservationService.save(reservation);
+    public ResponseEntity<ReservationDto> save(@RequestBody ReservationDto reservation){
+        return new ResponseEntity<>(reservationService.save(reservation), HttpStatus.CREATED);
     }
 
     @GetMapping(APP_ROUTE+"/reservation/{reservationid}")
     @PreAuthorize("hasRole('Admin_Role')")
-    public ReservationDto getReservation(@PathVariable("reservationid") Long id){
-        return reservationService.getReservation(id);
+    public ResponseEntity<ReservationDto> getReservation(@PathVariable("reservationid") Long id){
+        return new ResponseEntity<>(reservationService.getReservation(id), HttpStatus.OK);
     }
     @GetMapping(APP_ROUTE+"/reservation/all")
     @PreAuthorize("hasRole('Admin_Role')")
-    public List<ReservationDto> getAllReservations(){
-        return reservationService.getAllReservations();
+    public ResponseEntity<List<ReservationDto>> getAllReservations(){
+        return new ResponseEntity<>(reservationService.getAllReservations(), HttpStatus.OK);
     }
     @DeleteMapping(APP_ROUTE+"/reservation/delete/{reservationid}")
     public void deleteReservation(@PathVariable("reservationid") Long id){
@@ -49,11 +51,11 @@ public class ReservationRestController {
     }
 
     @GetMapping(APP_ROUTE+"/reservation/{clientid}")
-    public Client getReservedClient(@PathVariable("clientid") Long id){
-        return reservationService.getReservedClient(id);
+    public ResponseEntity<Client> getReservedClient(@PathVariable("clientid") Long id){
+        return new ResponseEntity<>(reservationService.getReservedClient(id),HttpStatus.OK);
     }
     @GetMapping(APP_ROUTE+"/reservation/{reservationid}/car")
-    public Car getReservedCar(@PathVariable("reservationid") Long id){
-        return reservationService.getReservedCar(id);
+    public ResponseEntity<Car> getReservedCar(@PathVariable("reservationid") Long id){
+        return new ResponseEntity<>(reservationService.getReservedCar(id),HttpStatus.OK);
     }
 }

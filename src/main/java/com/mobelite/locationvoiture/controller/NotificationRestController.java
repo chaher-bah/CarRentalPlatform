@@ -1,4 +1,6 @@
 package com.mobelite.locationvoiture.controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import com.mobelite.locationvoiture.dto.NotificationDto;
 import com.mobelite.locationvoiture.service.NotificationService;
@@ -18,31 +20,32 @@ public class NotificationRestController {
         this.notificationService = notificationService;
     }
     @PostMapping(APP_ROUTE+"/notification/ajouter")
-    public NotificationDto save(@RequestBody NotificationDto notification){
-        return notificationService.save(notification);
-    }
-    @DeleteMapping(APP_ROUTE+"/notification/delete/{notifid}")
-    public void delete(@PathVariable("notifid") Long notificationId){
-        notificationService.delete(notificationId);
+    public ResponseEntity<NotificationDto> save(@RequestBody NotificationDto notification){
+        return new ResponseEntity<>(notificationService.save(notification),HttpStatus.CREATED);
     }
     @PreAuthorize("hasRole('Admin_Role')")
     @GetMapping(APP_ROUTE+"/notification/all")
-    public List<NotificationDto> getAll(){
-        return notificationService.getAll();
+    public ResponseEntity<List<NotificationDto>> getAll(){
+        return new ResponseEntity<>(notificationService.getAll(),HttpStatus.OK);
     }
     @PreAuthorize("hasRole('Admin_Role')")
     @GetMapping(APP_ROUTE+"/notification/{notifid}")
-    public NotificationDto getById(@PathVariable("notifid") Long id){
-        return notificationService.getById(id);
+    public ResponseEntity<NotificationDto> getById(@PathVariable("notifid") Long id){
+        return new ResponseEntity<>(notificationService.getById(id),HttpStatus.OK);
     }
     @GetMapping(APP_ROUTE+"/notification/clients/{clientid}")
-    public List<NotificationDto> getByClient(@PathVariable("clientid") Long clientId){
-        return notificationService.getByClient(clientId);
+    public ResponseEntity<List<NotificationDto>> getByClient(@PathVariable("clientid") Long clientId){
+        return new ResponseEntity<>(notificationService.getByClient(clientId),HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('Admin_Role')")
     @GetMapping(APP_ROUTE+"/notification/admins/{adminid}")
-    public List<NotificationDto> getByAdmin(@PathVariable("adminid") Long adminId){
-        return notificationService.getByAdmin(adminId);
+    public ResponseEntity<List<NotificationDto>> getByAdmin(@PathVariable("adminid") Long adminId){
+        return new ResponseEntity<>(notificationService.getByAdmin(adminId),HttpStatus.OK);
+    }
+
+    @DeleteMapping(APP_ROUTE+"/notification/delete/{notifid}")
+    public void delete(@PathVariable("notifid") Long notificationId){
+        notificationService.delete(notificationId);
     }
 }

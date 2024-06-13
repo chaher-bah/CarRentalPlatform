@@ -3,6 +3,8 @@ package com.mobelite.locationvoiture.controller;
 import com.mobelite.locationvoiture.dto.CarDto;
 import com.mobelite.locationvoiture.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,32 +21,29 @@ public class CarRestController {
     }
 
     @PostMapping(APP_ROUTE+"/cars/ajouter")
-    public CarDto save(@RequestBody CarDto car){
-        return carservice.save(car);
+    public ResponseEntity<CarDto> save(@RequestBody CarDto car){
+        return new ResponseEntity<>(carservice.save(car), HttpStatus.CREATED);
     }
     @GetMapping(value = APP_ROUTE+ "/cars/{carid}")
-    public CarDto getCar(@PathVariable("carid") Long carId){
-        return carservice.getCar(carId);
+    public ResponseEntity<CarDto> getCar(@PathVariable("carid") Long carId){
+        return new ResponseEntity<>(carservice.getCar(carId),HttpStatus.OK);
     }
     @GetMapping(value = APP_ROUTE+ "/cars/all")
-    public List<CarDto> getAllCars(){
-        return carservice.getAllCars();
+    public ResponseEntity<List<CarDto>> getAllCars(){
+        return new ResponseEntity<>(carservice.getAllCars(),HttpStatus.OK);
     }
-    @DeleteMapping(value = APP_ROUTE+"/cars/delete/{carid}")
-    public void deleteCar(@PathVariable("carid")Long carId){
-        carservice.deleteCar(carId);
-    }
+
     @GetMapping(value = APP_ROUTE+"/cars/{marque}")
-    public List<CarDto> getCarsbymarque(@PathVariable("marque") String marque){
-        return carservice.getCarsbymarque(marque);
+    public ResponseEntity<List<CarDto>> getCarsbymarque(@PathVariable("marque") String marque){
+        return new ResponseEntity<>(carservice.getCarsbymarque(marque),HttpStatus.OK);
     }
     @GetMapping(value = APP_ROUTE+"/cars/disponibilite?=true")
-    public List<CarDto> getCarsByDisponibilite(){
-        return carservice.getCarsByDisponibilite();
+    public ResponseEntity<List<CarDto>> getCarsByDisponibilite(){
+        return new ResponseEntity<>(carservice.getCarsByDisponibilite(),HttpStatus.OK);
     }
     @GetMapping(value = APP_ROUTE+"/cars/price/{price}")
-    public List<CarDto> getCarsByPrice(@PathVariable("price") BigDecimal price){
-        return carservice.getCarsByPrice(price);
+    public ResponseEntity<List<CarDto>> getCarsByPrice(@PathVariable("price") BigDecimal price){
+        return new ResponseEntity<>(carservice.getCarsByPrice(price),HttpStatus.OK);
     }
     @PutMapping(value = APP_ROUTE+"/cars/{carid}/updatedipo?=false")
     public void updateDisponibiliteToFalse(@PathVariable("carid") Long carId){
@@ -53,5 +52,9 @@ public class CarRestController {
     @PutMapping(value = APP_ROUTE+"/cars/{carid}/updatedispo?=true")
     public void updateDisponibiliteToTrue(@PathVariable("carid") Long carId){
         carservice.updateDisponibiliteToTrue(carId);
+    }
+    @DeleteMapping(value = APP_ROUTE+"/cars/delete/{carid}")
+    public void deleteCar(@PathVariable("carid")Long carId){
+        carservice.deleteCar(carId);
     }
 }
