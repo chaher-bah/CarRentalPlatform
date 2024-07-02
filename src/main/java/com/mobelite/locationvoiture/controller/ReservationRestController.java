@@ -71,8 +71,8 @@ public class ReservationRestController {
     @get :the client of a reservation
     @parm:the id of a reservation
      */
-    @GetMapping(APP_ROUTE+"/reservation/{reservationid}")
-    public ResponseEntity<Client> getReservedClient(@PathVariable("reservationid") Long id){
+    @GetMapping(APP_ROUTE+"/reservation/{clientid}")
+    public ResponseEntity<Client> getReservedClient(@PathVariable("clientid") Long id){
         return new ResponseEntity<>(reservationService.getReservedClient(id),HttpStatus.OK);
     }
     /*
@@ -89,8 +89,7 @@ public class ReservationRestController {
      */
     @PreAuthorize("hasRole('Admin_Role')")
     @PatchMapping(APP_ROUTE+"reservation/{reservationid}/update/{status}")
-    ReservationDto updateReservationStatus(@PathVariable("reservationid") Long reservationid,
-                                           @PathVariable("status") reservationStatus reservationStatus){
+    ReservationDto updateReservationStatus(@PathVariable("reservationid") Long reservationid,@PathVariable("status") reservationStatus reservationStatus){
         return reservationService.updateReservationStatus(reservationid, reservationStatus);
     }
 

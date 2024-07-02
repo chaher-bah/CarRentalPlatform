@@ -11,7 +11,6 @@ import java.util.List;
 
 import static com.mobelite.locationvoiture.utils.constants.APP_ROUTE;
 
-@CrossOrigin(origins = "*")
 @RestController
 public class CarRestController {
     private final CarService carservice;
@@ -43,7 +42,7 @@ public class CarRestController {
     /*
     @get : the cars with the disponibilite set to true
      */
-    @GetMapping(value = APP_ROUTE+"/cars/disponibilite?=true")
+    @GetMapping(value = APP_ROUTE+"/cars/disponibilite=true")
     public ResponseEntity<List<CarDto>> getCarsByDisponibilite(){
         return new ResponseEntity<>(carservice.getCarsByDisponibilite(),HttpStatus.OK);
     }
@@ -61,7 +60,7 @@ public class CarRestController {
     public void updateDisponibiliteToFalse(@PathVariable("carid") Long carId){
         carservice.updateDisponibiliteToFalse(carId);
     }
-    @PatchMapping(value = APP_ROUTE+"/cars/{carid}/updatedispo?=true")
+    @PatchMapping(value = APP_ROUTE+"/cars/{carid}/updatedispo=true")
     public void updateDisponibiliteToTrue(@PathVariable("carid") Long carId){
         carservice.updateDisponibiliteToTrue(carId);
     }
