@@ -26,7 +26,7 @@ public class ReservationValidator {
         }
         if (reservationDto.getEndDate() == null) {
             errors.add("Date de fin de location n'est pas valide");
-        }if (reservationDto.getStartDate() !=null && reservationDto.getEndDate() != null && !reservationDto.getStartDate().isAfter(reservationDto.getEndDate())) {
+        }if (reservationDto.getStartDate() !=null && reservationDto.getEndDate() != null && !reservationDto.getStartDate().isBefore(reservationDto.getEndDate())) {
             errors.add("Le date de debut de location doit etre avant la date du fin");
         }
         return errors;

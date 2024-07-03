@@ -3,6 +3,7 @@ package com.mobelite.locationvoiture.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -14,11 +15,31 @@ import java.util.List;
 public class Client extends User {
     private String cin;
     private String numTel;
-    @OneToMany(targetEntity = Reservation.class)
-    private List<Reservation> reservations;
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<Reservation> reservations=new ArrayList<>();
     @Lob
     private byte[] photoPermis; 
     @OneToMany(targetEntity = Notification.class)
     private List<Notification> notifications;
+
+    public void addReservation(Reservation reservation) {
+        reservations.add(reservation);
+        reservation.setClient(this);
+    }
+
+    public void removeReservation(Reservation reservation) {
+        reservations.remove(reservation);
+        reservation.setClient(null);
+    }
+    @Override
+    public String toString() {
+        return "Client{" +
+                "id=" + getId() +
+                ", cin='" + cin + '\'' +
+                ", numTel='" + numTel + '\'' +
+                '}';
+    }
+
 
 }

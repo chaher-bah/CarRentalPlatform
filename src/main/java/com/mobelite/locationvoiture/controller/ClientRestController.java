@@ -6,14 +6,14 @@ import com.mobelite.locationvoiture.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 import static com.mobelite.locationvoiture.utils.constants.APP_ROUTE;
 
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 @RestController
 public class ClientRestController {
     private final ClientService clientService;
@@ -50,30 +50,30 @@ public class ClientRestController {
     /*
     @Get the client by his email
      */
-    @GetMapping(APP_ROUTE+"/client/{email}")
+    @GetMapping(APP_ROUTE+"/client/email/{email}")
     public ResponseEntity<ClientDto> getClientByEmail(@PathVariable("email") String email){
         return new ResponseEntity<>(clientService.getClientByEmail(email), HttpStatus.OK);
     }
     /*
     @get the client by his cin /passsport number if not tunien
      */
-    @GetMapping(APP_ROUTE+"/client/{cin}")
+    @GetMapping(APP_ROUTE+"/client/cin/{cin}")
     public ResponseEntity<ClientDto> getClientByCin(@PathVariable("cin") String cin){
         return new ResponseEntity<>(clientService.getClientByCin(cin), HttpStatus.OK);
     }
     /*
     @get all the clients that exicts in the data base
      */
-    @PreAuthorize("hasRole('Admin_Role')")
-    @GetMapping(APP_ROUTE+"/client/all")
+//    @PreAuthorize("hasRole('Admin_Role')")
+    @GetMapping(APP_ROUTE+"/client")
     public ResponseEntity<List<ClientDto>> getAllClients(){
         return new ResponseEntity<>(clientService.getAllClients(), HttpStatus.OK);
     }
     /*
     @Delete the client by his id
      */
-    @PreAuthorize("hasRole('Admin_Role')")
-    @DeleteMapping(APP_ROUTE+"/client/delete/{clientid}")
+//    @PreAuthorize("hasRole('Admin_Role')")
+    @DeleteMapping(APP_ROUTE+"/client/{clientid}")
     public void deleteById(@PathVariable("clientid") Long id){
         clientService.deleteById(id);
     }

@@ -27,7 +27,7 @@ public class CarRestController {
     public ResponseEntity<CarDto> getCar(@PathVariable("carid") Long carId){
         return new ResponseEntity<>(carservice.getCar(carId),HttpStatus.OK);
     }
-    @GetMapping(value = APP_ROUTE+ "/cars/all")
+    @GetMapping(value = APP_ROUTE+ "/cars")
     public ResponseEntity<List<CarDto>> getAllCars(){
         return new ResponseEntity<>(carservice.getAllCars(),HttpStatus.OK);
     }
@@ -35,7 +35,7 @@ public class CarRestController {
     @Get :the car or cars by their marque
     @parma les marques
      */
-    @GetMapping(value = APP_ROUTE+"/cars/{marque}")
+    @GetMapping(value = APP_ROUTE+"/cars/marque/{marque}")
     public ResponseEntity<List<CarDto>> getCarsbymarque(@PathVariable("marque") String marque){
         return new ResponseEntity<>(carservice.getCarsbymarque(marque),HttpStatus.OK);
     }
@@ -56,25 +56,18 @@ public class CarRestController {
     /*
     @changer la disponibilite
      */
-    @PatchMapping(value = APP_ROUTE+"/cars/{carid}/updatedipo?=false")
+    @PatchMapping(value = APP_ROUTE+"/cars/{carid}/notdispo")
     public void updateDisponibiliteToFalse(@PathVariable("carid") Long carId){
         carservice.updateDisponibiliteToFalse(carId);
     }
-    @PatchMapping(value = APP_ROUTE+"/cars/{carid}/updatedispo=true")
+    @PatchMapping(value = APP_ROUTE+"/cars/{carid}/dispo")
     public void updateDisponibiliteToTrue(@PathVariable("carid") Long carId){
         carservice.updateDisponibiliteToTrue(carId);
     }
     /*
-    delete a car by its id
-     */
-    @DeleteMapping(value = APP_ROUTE+"/cars/delete/{carid}")
-    public void deleteCar(@PathVariable("carid")Long carId){
-        carservice.deleteCar(carId);
-    }
-    /*
     *@change the price of a car
      */
-    @PatchMapping(value = APP_ROUTE+"/cars/{carid}/update/{price}")
+    @PatchMapping(value = APP_ROUTE+"/cars/{carid}/price/{price}")
     public ResponseEntity<CarDto> updatePrice(@PathVariable("carid") Long carId,@PathVariable("price") BigDecimal price){
         return new ResponseEntity<>(carservice.updateCarPrice(carId,price),HttpStatus.OK);
     }

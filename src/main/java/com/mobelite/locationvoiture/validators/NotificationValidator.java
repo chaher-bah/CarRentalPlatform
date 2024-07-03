@@ -18,8 +18,8 @@ public class NotificationValidator {
         if (!StringUtils.hasText(notificationDto.getMessage())) {
             errors.add("Message n'est pas valide [Il faut avoir au moin un mot ]");
         }
-        if (!(notificationDto.getClient() == null) || !(notificationDto.getAdmin() == null) ) {
-            errors.add("Destinataire n'est pas valide");
+        if (notificationDto.getClientid() == null && notificationDto.getAdminid() == null) {
+            errors.add("Il faut fournir au moins un destinataire (clientid ou adminid)");
         }
 
         return errors;

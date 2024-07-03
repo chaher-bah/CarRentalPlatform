@@ -2,9 +2,11 @@ package com.mobelite.locationvoiture.dto;
 
 import com.mobelite.locationvoiture.model.Admin;
 
+import com.mobelite.locationvoiture.model.Car;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Collections;
 import java.util.List;
 @Data
 @Builder

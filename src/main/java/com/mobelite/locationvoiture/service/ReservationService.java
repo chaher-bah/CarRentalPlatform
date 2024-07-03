@@ -16,8 +16,8 @@ public interface ReservationService {
     void deleteReservation(Long id);
     void updateStartDate(Long reservationId, LocalDateTime newStartDate);
     void updateEndDate(Long reservationId, LocalDateTime newEndDate);
-    Client getReservedClient(Long reservationid);
+    List<ReservationDto> getReservedClient(Long clientid);
     Car getReservedCar(Long resrevationid);
-    ReservationDto updateReservationStatus(Long reservationid, reservationStatus reservationStatus);
+    void updateReservationStatus(Long reservationid, reservationStatus reservationStatus);
 
 }

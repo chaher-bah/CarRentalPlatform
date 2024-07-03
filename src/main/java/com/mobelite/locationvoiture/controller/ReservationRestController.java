@@ -7,7 +7,7 @@ import com.mobelite.locationvoiture.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -25,56 +25,71 @@ public class ReservationRestController {
     }
     @PostMapping(APP_ROUTE+"/reservation/ajouter")
     public ResponseEntity<ReservationDto> save(@RequestBody ReservationDto reservation){
-        return new ResponseEntity<>(reservationService.save(reservation), HttpStatus.CREATED);
-    }
+        ReservationDto savedReservation = reservationService.save(reservation);
+        return new ResponseEntity<>(savedReservation, HttpStatus.CREATED);    }
     /*
-    *@get :to get a reservation
-    * @parm :the id of the reservation
+     *@get :to get a reservation
+     * @parm :the id of the reservation
      */
     @GetMapping(APP_ROUTE+"/reservation/{reservationid}")
-    @PreAuthorize("hasRole('Admin_Role')")
+//    @PreAuthorize("hasRole('Admin_Role')")
     public ResponseEntity<ReservationDto> getReservation(@PathVariable("reservationid") Long id){
         return new ResponseEntity<>(reservationService.getReservation(id), HttpStatus.OK);
     }
     /*
-    *@get all the reservation exists in the database
+     *@get all the reservation exists in the database
      */
-    @GetMapping(APP_ROUTE+"/reservation/all")
-    @PreAuthorize("hasRole('Admin_Role')")
+    @GetMapping(APP_ROUTE+"/reservation")
+//    @PreAuthorize("hasRole('Admin_Role')")
     public ResponseEntity<List<ReservationDto>> getAllReservations(){
         return new ResponseEntity<>(reservationService.getAllReservations(), HttpStatus.OK);
     }
     /*
-    *@delete a reservation by it's id
+     *@delete a reservation by it's id
      */
-    @DeleteMapping(APP_ROUTE+"/reservation/delete/{reservationid}")
+    @DeleteMapping(APP_ROUTE+"/reservation/{reservationid}")
     public void deleteReservation(@PathVariable("reservationid") Long id){
         reservationService.deleteReservation(id);
     }
     /*
-    *@update the start date
-    * @parm: the reservation id and the new start date
+     *@update the start date
+     * @parm: the reservation id and the new start date
      */
-    @PatchMapping(APP_ROUTE+"/reservation/{reservationid}/update/startdate")
-    public void updateStartDate(@PathVariable("reservationid") Long reservationId, LocalDateTime newStartDate){
+    @PatchMapping(APP_ROUTE+"/reservation/{reservationid}/startdate")
+    public ResponseEntity<String> updateStartDate(@PathVariable("reservationid") Long reservationId, @RequestBody UpdateDateRequest newStartDateRequest){
+        ReservationDto reservation = reservationService.getReservation(reservationId);
+        LocalDateTime newStartDate = newStartDateRequest.getDate();
+
+        if (newStartDate.isAfter(reservation.getEndDate())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("New start date cannot be after the end date");
+        }
+
         reservationService.updateStartDate(reservationId, newStartDate);
+        return ResponseEntity.ok("Start date updated successfully");
     }
     /*
      *@update the end date
      * @parm: the reservation id and the new end date
      */
-    @PatchMapping(APP_ROUTE+"/reservation/{reservationid}/update/enddate")
-    public void updateEndDate(@PathVariable("reservationid") Long reservationId, LocalDateTime newEndDate){
+    @PatchMapping(APP_ROUTE+"/reservation/{reservationid}/enddate")
+    public ResponseEntity<String> updateEndDate(@PathVariable("reservationid") Long reservationId, @RequestBody UpdateDateRequest newEndDateRequest){
+        ReservationDto reservation = reservationService.getReservation(reservationId);
+        LocalDateTime newEndDate = newEndDateRequest.getDate();
+
+        if (newEndDate.isBefore(reservation.getStartDate())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("New end date cannot be before the start date");
+        }
+
         reservationService.updateEndDate(reservationId, newEndDate);
-    }
+        return ResponseEntity.ok("End date updated successfully");    }
     /*
     @get :the client of a reservation
     @parm:the id of a reservation
      */
-    @GetMapping(APP_ROUTE+"/reservation/{clientid}")
-    public ResponseEntity<Client> getReservedClient(@PathVariable("clientid") Long id){
-        return new ResponseEntity<>(reservationService.getReservedClient(id),HttpStatus.OK);
-    }
+    @GetMapping(APP_ROUTE+"/reservation/client/{clientid}")
+    public ResponseEntity<List<ReservationDto>> getReservedClient(@PathVariable("clientid") Long id){
+        List<ReservationDto> reservations = reservationService.getReservedClient(id);
+        return new ResponseEntity<>(reservations, HttpStatus.OK);    }
     /*
     @get :the reserved car for this reservation
     @parm:the id of a reservation
@@ -87,10 +102,37 @@ public class ReservationRestController {
     @update: the status of reservation
     @param:the reservation id and the status wanted to be
      */
-    @PreAuthorize("hasRole('Admin_Role')")
-    @PatchMapping(APP_ROUTE+"reservation/{reservationid}/update/{status}")
-    ReservationDto updateReservationStatus(@PathVariable("reservationid") Long reservationid,@PathVariable("status") reservationStatus reservationStatus){
-        return reservationService.updateReservationStatus(reservationid, reservationStatus);
+    @PatchMapping(APP_ROUTE+"/reservation/status/{reservationid}")
+    ResponseEntity<String> updateReservationStatus(@PathVariable("reservationid") Long reservationid,@RequestBody UpdateStatusRequest newReservationStatusRequest){
+
+        String statusStr = newReservationStatusRequest.getStatus();
+        reservationStatus newReservationStatus;
+
+        try {
+            newReservationStatus = reservationStatus.valueOf(statusStr);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid status value");
+        }
+        reservationService.updateReservationStatus(reservationid, newReservationStatus);
+        return ResponseEntity.ok("Status successfully");
+    }
+
+//    @PreAuthorize("hasRole('Admin_Role')")
+    public static  class UpdateStatusRequest{
+        private String status;
+        public String getStatus(){return status;}
+    }
+
+    public static class UpdateDateRequest {
+        private LocalDateTime date;
+
+        public LocalDateTime getDate() {
+            return date;
+        }
+
+        public void setDate(LocalDateTime date) {
+            this.date = date;
+        }
     }
 
 }

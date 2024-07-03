@@ -1,13 +1,12 @@
 package com.mobelite.locationvoiture.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -24,6 +23,7 @@ public class Car {
     @Column(name = "prixPN")/*prix par nuit*/
     private BigDecimal fraisLocation;
     private String matricule;
+    private String anneemodele;
     @Lob
     private byte[] image;
     private LocalDate dateExpVingnette;
@@ -34,6 +34,31 @@ public class Car {
     @ManyToOne(targetEntity = Admin.class)
     @JoinColumn(name = "Admin_id")
     private Admin admin;
-    @OneToOne(targetEntity = Reservation.class)
-    private Reservation reservation;
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    private List<Reservation> reservations=new ArrayList<>();
+
+
+    public void addReservation(Reservation reservation) {
+        reservations.add(reservation);
+        reservation.setCar(this);
+    }
+    @Override
+    public String toString() {
+        return "Car{" +
+                "id=" + id +
+                ", make='" + marque + '\'' +
+                ", model='" + modele + '\'' +
+                ", year=" + anneemodele +
+                ", licensePlate='" + matricule + '\'' +
+                ", image='" + image + '\'' +
+                ", fraisLocation=" + fraisLocation +
+                ", disponibilite=" + disponibilite +
+                ", vin=" + vin +
+                ", dateExpAssurance=" + dateExpAssurance +
+                ", dateExpVingnette=" + dateExpVingnette +
+                ", dateExpVisite=" + dateExpVisite +
+                // Exclude reservations to avoid circular reference
+                '}';
+    }
 }

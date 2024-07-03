@@ -1,5 +1,7 @@
 package com.mobelite.locationvoiture.dto;
 
+import com.mobelite.locationvoiture.model.Admin;
+import com.mobelite.locationvoiture.model.Client;
 import com.mobelite.locationvoiture.model.Notification;
 import lombok.Builder;
 import lombok.Data;
@@ -9,8 +11,8 @@ import lombok.Data;
 public class NotificationDto {
     private Long id;
     private String message;
-    private ClientDto client;
-    private AdminDto admin;
+    private Long clientid;
+    private Long adminid;
 
     //methode pour retourner une dto en donnant une entitee
     public static NotificationDto fromEntity(Notification notification) {
@@ -21,6 +23,8 @@ public class NotificationDto {
         return NotificationDto.builder()
                 .id(notification.getId())
                 .message(notification.getMessage())
+                .clientid(notification.getClient() != null ? notification.getClient().getId() : null)
+                .adminid(notification.getAdmin() != null ? notification.getAdmin().getId() : null)
                 .build();
     }
     //dto---> entity
@@ -28,9 +32,20 @@ public class NotificationDto {
         if (notificationDto == null){
             return null;
         }
-        return Notification.builder()
+        Notification notification = Notification.builder()
                 .id(notificationDto.getId())
                 .message(notificationDto.getMessage())
                 .build();
+        if (notificationDto.getClientid() != null) {
+            Client client = new Client();
+            client.setId(notificationDto.getClientid());
+            notification.setClient(client);
+        }
+        if (notificationDto.getAdminid() != null) {
+            Admin admin = new Admin();
+            admin.setId(notificationDto.getAdminid());
+            notification.setAdmin(admin);
+        }
+        return notification;
     }
 }

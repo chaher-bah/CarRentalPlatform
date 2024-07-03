@@ -12,5 +12,6 @@ public interface AdminService {
     AdminDto getAdmin(Long id);
     void addCars(Long adminId,List<Car> cars);
     List<CarDto> getCars(Long adminId);
+    void removeCar(Long adminId,Long carid);
 
 }

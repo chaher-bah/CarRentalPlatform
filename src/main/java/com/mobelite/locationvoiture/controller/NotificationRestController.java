@@ -1,7 +1,7 @@
 package com.mobelite.locationvoiture.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import com.mobelite.locationvoiture.dto.NotificationDto;
 import com.mobelite.locationvoiture.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +27,8 @@ public class NotificationRestController {
     @Get all the notification send
     *an admin role
      */
-    @PreAuthorize("hasRole('Admin_Role')")
-    @GetMapping(APP_ROUTE+"/notification/all")
+//    @PreAuthorize("hasRole('Admin_Role')")
+    @GetMapping(APP_ROUTE+"/notification")
     public ResponseEntity<List<NotificationDto>> getAll(){
         return new ResponseEntity<>(notificationService.getAll(),HttpStatus.OK);
     }
@@ -36,7 +36,7 @@ public class NotificationRestController {
     @get any notification by its id
     *an admin role
      */
-    @PreAuthorize("hasRole('Admin_Role')")
+//    @PreAuthorize("hasRole('Admin_Role')")
     @GetMapping(APP_ROUTE+"/notification/{notifid}")
     public ResponseEntity<NotificationDto> getById(@PathVariable("notifid") Long id){
         return new ResponseEntity<>(notificationService.getById(id),HttpStatus.OK);
@@ -51,13 +51,13 @@ public class NotificationRestController {
     /*
     @get a specified admin's notification
      */
-    @PreAuthorize("hasRole('Admin_Role')")
+//    @PreAuthorize("hasRole('Admin_Role')")
     @GetMapping(APP_ROUTE+"/notification/admins/{adminid}")
     public ResponseEntity<List<NotificationDto>> getByAdmin(@PathVariable("adminid") Long adminId){
         return new ResponseEntity<>(notificationService.getByAdmin(adminId),HttpStatus.OK);
     }
 
-    @DeleteMapping(APP_ROUTE+"/notification/delete/{notifid}")
+    @DeleteMapping(APP_ROUTE+"/notification/{notifid}")
     public void delete(@PathVariable("notifid") Long notificationId){
         notificationService.delete(notificationId);
     }

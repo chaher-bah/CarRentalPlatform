@@ -26,14 +26,15 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public NotificationDto save(NotificationDto notification) {
-        List<String> errors = NotificationValidator.validation(notification);
+    public NotificationDto save(NotificationDto notificationdto) {
+        List<String> errors = NotificationValidator.validation(notificationdto);
         if (!errors.isEmpty()) {
-            log.error("Car Validation errors: {}", errors);
+            log.error("Notif Validation errors: {}", errors);
             throw new EntityNotValidException("L'entite notification n'est pas valide", ErrorCodes.NOTIFICATION_NOT_VALID,errors);
         }
-        return NotificationDto.fromEntity(notificationRepository.save(NotificationDto.toEntity(notification)));
-    }
+        Notification notification = NotificationDto.toEntity(notificationdto);
+        notification = notificationRepository.save(notification);
+        return NotificationDto.fromEntity(notification);    }
 
     @Override
     public void delete(Long notificationId){
@@ -72,7 +73,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public List<NotificationDto> getByAdmin(Long adminId) {
-        List<Notification> notifsperadmin=notificationRepository.findByClientId(adminId);
+        List<Notification> notifsperadmin=notificationRepository.findByAdminId(adminId);
         if (notifsperadmin == null){ throw new EntityNotFoundException("La Notification avec l'admin Id"
                 +adminId+"n'exicte pas dans le BD",ErrorCodes.NOTIFICATION_NOT_FOUND); }
 

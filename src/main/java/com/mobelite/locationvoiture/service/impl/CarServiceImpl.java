@@ -53,18 +53,7 @@ public class CarServiceImpl implements CarService {
         return carRepository.findAll().stream().map(CarDto::fromEntity).collect(Collectors.toList());
     }
 
-    @Override
-    public void deleteCar(Long carID) {
-        if (carID == null){
-            log.error("Car id is null cannot delete car");
-            return;
-        }
-        if (!carRepository.existsById(carID)){
-            log.error("car with this id don't exist");
-            throw new EntityNotFoundException("La voiture avec l'ID "+carID+"n'esxicte pas dans le BD",ErrorCodes.CAR_NOT_FOUND);
-        }
-        carRepository.deleteById(carID);
-    }
+
 
     @Override
     public List<CarDto> getCarsbymarque(String marque) {

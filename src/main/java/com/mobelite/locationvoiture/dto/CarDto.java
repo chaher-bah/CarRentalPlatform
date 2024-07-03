@@ -2,9 +2,11 @@
 package com.mobelite.locationvoiture.dto;
 import com.mobelite.locationvoiture.model.Car;
 import jakarta.persistence.Lob;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import java.math.BigDecimal;
+@AllArgsConstructor
 @Builder
 @Data
 public class CarDto {
@@ -13,6 +15,7 @@ public class CarDto {
     private String modele;
     private BigDecimal fraisLocation;
     private String matricule;
+    private String anneemodele;
     @Lob
     private byte[] image;
    private Boolean disponibilite;
@@ -27,8 +30,10 @@ public class CarDto {
                 .marque(car.getMarque())
                 .modele(car.getModele())
                 .fraisLocation(car.getFraisLocation())
+                .anneemodele(car.getAnneemodele())
                 .matricule(car.getMatricule())
                 .image(car.getImage())
+                .admin(AdminDto.fromEntity(car.getAdmin()))
                 .disponibilite(car.getDisponibilite())
                 .build();
     }
@@ -44,6 +49,8 @@ public class CarDto {
                 .fraisLocation(carDto.getFraisLocation())
                 .matricule(carDto.getMatricule())
                 .image(carDto.getImage())
+                .anneemodele((carDto.getAnneemodele()))
+                .admin(AdminDto.toEntity(carDto.getAdmin()))
                 .disponibilite(carDto.getDisponibilite())
                 .build();
     }

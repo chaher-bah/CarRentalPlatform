@@ -1,5 +1,6 @@
 package com.mobelite.locationvoiture.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mobelite.locationvoiture.model.Reservation;
 import com.mobelite.locationvoiture.model.reservationStatus;
 import jakarta.persistence.EnumType;
@@ -15,20 +16,15 @@ import java.time.LocalDateTime;
 @Data
 public class ReservationDto {
     private Long id;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime endDate;
     @Enumerated(EnumType.STRING)
     private reservationStatus reservationStatus;
     private ClientDto client;
     private CarDto car;
     private BigDecimal fraisAPayer=getFraisAPayer();
-    public BigDecimal getFraisAPayer() {
-        if (startDate != null && endDate != null && car != null && car.getFraisLocation() != null) {
-            long daysBetween = Duration.between(startDate, endDate).toDays();
-            return car.getFraisLocation().multiply(BigDecimal.valueOf(daysBetween));
-        }
-        return BigDecimal.ZERO;
-    }
     public static ReservationDto fromEntity(Reservation reservation) {
         if (reservation == null){
             return null;
@@ -38,6 +34,9 @@ public class ReservationDto {
                 .startDate(reservation.getStartDate())
                 .endDate(reservation.getEndDate())
                 .reservationStatus(reservation.getReservationStatus())
+                .fraisAPayer(reservation.getFraisAPayer())
+                .client(ClientDto.fromEntity(reservation.getClient()))
+                .car(CarDto.fromEntity(reservation.getCar()))
                 .build();
     }
     //dto---> entity
@@ -50,6 +49,8 @@ public class ReservationDto {
                 .startDate(reservationDto.getStartDate())
                 .endDate(reservationDto.getEndDate())
                 .reservationStatus(reservationDto.getReservationStatus())
+                .client(ClientDto.toEntity(reservationDto.getClient()))
+                .car(CarDto.toEntity(reservationDto.getCar()))
                 .build();
     }
     //check si la reservation est confirmee

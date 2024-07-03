@@ -9,7 +9,6 @@ public interface CarService {
     CarDto save(CarDto car);
     CarDto getCar(Long id);
     List<CarDto> getAllCars();
-    void deleteCar(Long carId);
     List<CarDto> getCarsbymarque(String marque);
     List<CarDto> getCarsByDisponibilite();
     List<CarDto> getCarsByPrice(BigDecimal price);
