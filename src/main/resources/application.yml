@@ -15,5 +15,10 @@ spring:
       hibernate:
         format_sql: update
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  servlet:
+    multipart:
+      enabled: true
+      max-request-size: 100MB
+      max-file-size: 100MB
 server:
   port: 2020

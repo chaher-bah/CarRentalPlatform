@@ -5,6 +5,7 @@ import jakarta.persistence.Lob;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -19,7 +20,7 @@ public class ClientDto {
 
     private List<ReservationDto> reservations;
     @Lob
-    private byte[] photoPermis;
+    private List<byte[]> photoPermis ;
 
     private List<NotificationDto> notifications;
     public static ClientDto fromEntity(Client client) {

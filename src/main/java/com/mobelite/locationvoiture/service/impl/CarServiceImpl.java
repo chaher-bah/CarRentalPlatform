@@ -5,14 +5,19 @@ import com.mobelite.locationvoiture.exception.EntityNotFoundException;
 import com.mobelite.locationvoiture.exception.EntityNotValidException;
 import com.mobelite.locationvoiture.exception.ErrorCodes;
 import com.mobelite.locationvoiture.model.Car;
+import com.mobelite.locationvoiture.model.Client;
 import com.mobelite.locationvoiture.repository.carRepository;
 import com.mobelite.locationvoiture.service.CarService;
+import com.mobelite.locationvoiture.utils.ImageUtils;
 import com.mobelite.locationvoiture.validators.CarValidator;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -106,6 +111,44 @@ public class CarServiceImpl implements CarService {
         CarDto cardto = getCar(carId);
         cardto.setFraisLocation(price);
         return CarDto.fromEntity(carRepository.save(CarDto.toEntity(cardto)));
+    }
+
+    @Override
+    public List<byte[]> getCarImages(Long carId) {
+        if (carId == null) {
+            log.error("car id is null image cannot be retrieved");
+            return null;
+        }
+        Car car = carRepository.findById(carId).orElseThrow(() -> new RuntimeException("Car not found"));
+        if ((car.getImages())==null){
+            log.error("Images de voiture n'existe pas");
+            return null;
+        }
+        return car.getImages();
+    }
+    @Override
+    public byte[] getCarImage(Long carId, int imageIndex) {
+        Car car = carRepository.findById(carId)
+                .orElseThrow(() -> new EntityNotFoundException("Car not found"));
+        if (imageIndex < 0 || imageIndex >= car.getImages().size()) {
+            throw new EntityNotFoundException("Image not found");
+        }
+        return car.getImages().get(imageIndex);
+    }
+    @Transactional
+    @Override
+    public void saveCarImages(Long carId, List<MultipartFile> images) {
+        Car car = carRepository.findById(carId).orElseThrow(() -> new RuntimeException("Car not found"));
+        if (!images.isEmpty() && images.size() > 5 ){
+            throw new EntityNotValidException("L'entite voiture n'est pas valide[photos]");
+        }
+        try {
+            for (MultipartFile imagefile : images) {car.getImages().add(imagefile.getBytes());    }
+        } catch (IOException e) {
+            log.error("a problem while uploading image");
+            throw new RuntimeException(e);
+        }
+        carRepository.save(car);
     }
 
     @Override

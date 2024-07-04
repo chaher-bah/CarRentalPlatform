@@ -2,7 +2,9 @@ package com.mobelite.locationvoiture.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Type;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 @EqualsAndHashCode(callSuper = true)
@@ -18,8 +20,13 @@ public class Client extends User {
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<Reservation> reservations=new ArrayList<>();
-    @Lob
-    private byte[] photoPermis; 
+
+    @ElementCollection
+    @CollectionTable(name = "client_photos", joinColumns = @JoinColumn(name = "client_id"))
+    @Column(name = "photo")
+    private List<byte[]> photoPermis = new ArrayList<>();
+
+
     @OneToMany(targetEntity = Notification.class)
     private List<Notification> notifications;
 

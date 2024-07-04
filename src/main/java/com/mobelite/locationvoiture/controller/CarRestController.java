@@ -4,13 +4,16 @@ import com.mobelite.locationvoiture.dto.CarDto;
 import com.mobelite.locationvoiture.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.math.BigDecimal;
 import java.util.List;
 
 import static com.mobelite.locationvoiture.utils.constants.APP_ROUTE;
-
+@CrossOrigin(origins = "*")
 @RestController
 public class CarRestController {
     private final CarService carservice;
@@ -19,10 +22,20 @@ public class CarRestController {
         this.carservice = carservice;
     }
 
-    @PostMapping(APP_ROUTE+"/cars/ajouter")
-    public ResponseEntity<CarDto> save(@RequestBody CarDto car){
-        return new ResponseEntity<>(carservice.save(car), HttpStatus.CREATED);
+    @PostMapping(value = APP_ROUTE + "/cars/ajouter", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<CarDto> addCar(
+            @RequestPart("car") CarDto carDto,
+            @RequestPart("images") List<MultipartFile> images) {
+        CarDto savedCar = carservice.save(carDto);
+        carservice.saveCarImages(savedCar.getId(), images);
+        return ResponseEntity.ok(savedCar);
     }
+
+
+    //    @PostMapping(APP_ROUTE+"/cars/ajouter")
+//    public ResponseEntity<CarDto> save(@RequestBody CarDto car){
+//        return new ResponseEntity<>(carservice.save(car), HttpStatus.CREATED);
+//    }
     @GetMapping(value = APP_ROUTE+ "/cars/{carid}")
     public ResponseEntity<CarDto> getCar(@PathVariable("carid") Long carId){
         return new ResponseEntity<>(carservice.getCar(carId),HttpStatus.OK);
@@ -70,5 +83,30 @@ public class CarRestController {
     @PatchMapping(value = APP_ROUTE+"/cars/{carid}/price/{price}")
     public ResponseEntity<CarDto> updatePrice(@PathVariable("carid") Long carId,@PathVariable("price") BigDecimal price){
         return new ResponseEntity<>(carservice.updateCarPrice(carId,price),HttpStatus.OK);
+    }
+    @PostMapping(value = APP_ROUTE+"/cars/{carId}/uploadImages")
+    public ResponseEntity<String> uploadImages(@PathVariable("carId") Long carId,@RequestParam("files") List<MultipartFile> files){
+        try {
+            carservice.saveCarImages(carId, files);
+            return new ResponseEntity<>("Files uploaded successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("File upload failed", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping(value = APP_ROUTE+"/cars/{carId}/images")
+    public ResponseEntity<List<byte[]>> getCarImages(@PathVariable("carId") Long carId){
+        List<byte[]> images = carservice.getCarImages(carId);
+        if (images != null ) {
+            return new ResponseEntity<>(images, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @GetMapping(value = APP_ROUTE+"/cars/{id}/images/{imageIndex}")
+    public ResponseEntity<byte[]> getCarImage(@PathVariable("id") Long id, @PathVariable("imageIndex") int imageIndex) {
+        byte[] imageBytes = carservice.getCarImage(id, imageIndex);
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(imageBytes);
     }
 }

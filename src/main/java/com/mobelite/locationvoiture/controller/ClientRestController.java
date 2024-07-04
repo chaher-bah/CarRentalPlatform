@@ -4,16 +4,19 @@ import com.mobelite.locationvoiture.dto.ClientDto;
 import com.mobelite.locationvoiture.dto.ReservationDto;
 import com.mobelite.locationvoiture.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 import static com.mobelite.locationvoiture.utils.constants.APP_ROUTE;
 
-//@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*")
 @RestController
 public class ClientRestController {
     private final ClientService clientService;
@@ -36,10 +39,7 @@ public class ClientRestController {
     @Get the phote of the permit pass of a client
     @parm the id of a client
      */
-    @GetMapping(APP_ROUTE+"/client/{clientid}/permis")
-    public ResponseEntity<byte[]> getPermisImage(@PathVariable("clientid") Long id){
-        return new ResponseEntity<>(clientService.getPermisImage(id), HttpStatus.OK);
-    }
+
     /*
     @Get all the reservations of a client if exicts
      */
@@ -78,5 +78,28 @@ public class ClientRestController {
         clientService.deleteById(id);
     }
 
+
+
+    @PostMapping(APP_ROUTE + "/client/{clientid}/uploadPermis")
+    public ResponseEntity<String> uploadPermisImage(@PathVariable("clientid") Long id, @RequestParam("files") List<MultipartFile> files) {
+        try {
+            clientService.savePermisImage(id, files);
+            return new ResponseEntity<>("Files uploaded successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("File upload failed", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(APP_ROUTE + "/client/{clientid}/permis")
+    public ResponseEntity<List<byte[]>> getPermisImage(@PathVariable("clientid") Long id) {
+        List<byte[]> images = clientService.getPermisImage(id);
+        if (images != null ) {
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.IMAGE_JPEG); // Change to the appropriate image type if necessary (e.g., IMAGE_PNG)
+            return new ResponseEntity<>(images, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
 }

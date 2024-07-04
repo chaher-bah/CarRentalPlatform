@@ -16,7 +16,7 @@ import java.util.List;
 @MappedSuperclass
 public class User implements Serializable {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
     private String nom;
     private String prenom;

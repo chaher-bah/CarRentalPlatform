@@ -6,7 +6,9 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -17,15 +19,19 @@ import java.util.List;
 public class Car {
     @Id
     private Long id;
-    private  String vin;
+    private  String carburant;
     private String marque;
     private String modele;
     @Column(name = "prixPN")/*prix par nuit*/
     private BigDecimal fraisLocation;
     private String matricule;
     private String anneemodele;
-    @Lob
-    private byte[] image;
+    private String transmission;
+    @ElementCollection
+    @CollectionTable(name = "car_photos", joinColumns = @JoinColumn(name = "car_id"))
+    @Column(name = "photo")
+    private List<byte[]> images = new ArrayList<>();
+
     private LocalDate dateExpVingnette;
     private LocalDate dateExpVisite;
     private LocalDate dateExpAssurance;
@@ -43,6 +49,18 @@ public class Car {
         reservations.add(reservation);
         reservation.setCar(this);
     }
+
+    public List<String> getImagesBase64() {
+        return images.stream()
+                .map(image -> Base64.getEncoder().encodeToString(image))
+                .collect(Collectors.toList());
+    }
+
+    public void setImagesBase64(List<String> base64Images) {
+        this.images = base64Images.stream()
+                .map(Base64.getDecoder()::decode)
+                .collect(Collectors.toList());
+    }
     @Override
     public String toString() {
         return "Car{" +
@@ -51,10 +69,10 @@ public class Car {
                 ", model='" + modele + '\'' +
                 ", year=" + anneemodele +
                 ", licensePlate='" + matricule + '\'' +
-                ", image='" + image + '\'' +
                 ", fraisLocation=" + fraisLocation +
                 ", disponibilite=" + disponibilite +
-                ", vin=" + vin +
+                ", Carburant=" + carburant +
+                ", Transmission=" + transmission +
                 ", dateExpAssurance=" + dateExpAssurance +
                 ", dateExpVingnette=" + dateExpVingnette +
                 ", dateExpVisite=" + dateExpVisite +
