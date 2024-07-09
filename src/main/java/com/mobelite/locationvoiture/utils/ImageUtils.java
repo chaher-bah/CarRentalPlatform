@@ -1,6 +1,10 @@
 package com.mobelite.locationvoiture.utils;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Deflater;
@@ -57,5 +61,15 @@ public class ImageUtils {
             decompressedList.add(decompressImage(data));
         }
         return decompressedList;
+    }
+    public static BufferedImage byteArrayToImage(byte[] imageData) {
+        try {
+            ByteArrayInputStream bis = new ByteArrayInputStream(imageData);
+            return ImageIO.read(bis);
+        } catch (IOException e) {
+            // Handle exception
+            e.printStackTrace();
+            return null;
+        }
     }
 }

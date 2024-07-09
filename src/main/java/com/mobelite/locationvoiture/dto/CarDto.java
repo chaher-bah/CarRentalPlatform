@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.Collections;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,11 +28,9 @@ public class CarDto {
     private String transmission;
     private List<String> imageUrls;
     private Boolean disponibilite;
-    private AdminDto admin;
 
     public static CarDto fromEntity(Car car) {
         if (car == null) {
-            // TODO: Handle null car with an exception
             return null;
         }
         return CarDto.builder()
@@ -43,10 +41,9 @@ public class CarDto {
                 .fraisLocation(car.getFraisLocation())
                 .anneemodele(car.getAnneemodele())
                 .matricule(car.getMatricule())
-                .imageUrls(car.getImages().stream()
-                        .map(img -> "http://localhost:2020/"+APP_ROUTE+"/cars/" + car.getId() + "/images/" + (car.getImages().indexOf(img) ))
+                .imageUrls(car.getImageUrls().stream()
+                        .map(img -> "http://localhost:2020/"+APP_ROUTE+"/cars/" + car.getId() + "/images/" + (car.getImageUrls().indexOf(img) ))
                         .collect(Collectors.toList()))
-                .admin(AdminDto.fromEntity(car.getAdmin()))
                 .disponibilite(car.getDisponibilite())
                 .carburant(car.getCarburant())
                 .build();
@@ -63,9 +60,8 @@ public class CarDto {
                 .transmission(carDto.getTransmission())
                 .fraisLocation(carDto.getFraisLocation())
                 .matricule(carDto.getMatricule())
-                .images(Collections.emptyList())
+                .imageUrls(null)
                 .anneemodele(carDto.getAnneemodele())
-                .admin(AdminDto.toEntity(carDto.getAdmin()))
                 .disponibilite(carDto.getDisponibilite())
                 .carburant(carDto.getCarburant())
                 .build();

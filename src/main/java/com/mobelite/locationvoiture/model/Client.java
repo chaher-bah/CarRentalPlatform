@@ -2,9 +2,6 @@ package com.mobelite.locationvoiture.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Type;
-
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 @EqualsAndHashCode(callSuper = true)

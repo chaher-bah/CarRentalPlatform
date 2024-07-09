@@ -1,7 +1,12 @@
 package com.mobelite.locationvoiture.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -18,6 +23,7 @@ import java.util.stream.Collectors;
 @Entity
 public class Car {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private  String carburant;
     private String marque;
@@ -29,12 +35,21 @@ public class Car {
     private String transmission;
     @ElementCollection
     @CollectionTable(name = "car_photos", joinColumns = @JoinColumn(name = "car_id"))
+    @Lob
+    @Fetch(FetchMode.JOIN)
     @Column(name = "photo")
-    private List<byte[]> images = new ArrayList<>();
+    private List<byte[]> imageUrls = new ArrayList<>();
 
-    private LocalDate dateExpVingnette;
+    @JsonFormat(pattern = "yyyy-MM-dd",shape = JsonFormat.Shape.STRING)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    private LocalDate dateExpVignette;
+    @JsonFormat(pattern = "yyyy-MM-dd",shape = JsonFormat.Shape.STRING)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate dateExpVisite;
+    @JsonFormat(pattern = "yyyy-MM-dd",shape = JsonFormat.Shape.STRING)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate dateExpAssurance;
+
     @Column(name = "dispo")
     private Boolean disponibilite;
     @ManyToOne(targetEntity = Admin.class)
@@ -50,17 +65,6 @@ public class Car {
         reservation.setCar(this);
     }
 
-    public List<String> getImagesBase64() {
-        return images.stream()
-                .map(image -> Base64.getEncoder().encodeToString(image))
-                .collect(Collectors.toList());
-    }
-
-    public void setImagesBase64(List<String> base64Images) {
-        this.images = base64Images.stream()
-                .map(Base64.getDecoder()::decode)
-                .collect(Collectors.toList());
-    }
     @Override
     public String toString() {
         return "Car{" +
@@ -74,7 +78,7 @@ public class Car {
                 ", Carburant=" + carburant +
                 ", Transmission=" + transmission +
                 ", dateExpAssurance=" + dateExpAssurance +
-                ", dateExpVingnette=" + dateExpVingnette +
+                ", dateExpVingnette=" + dateExpVignette +
                 ", dateExpVisite=" + dateExpVisite +
                 // Exclude reservations to avoid circular reference
                 '}';

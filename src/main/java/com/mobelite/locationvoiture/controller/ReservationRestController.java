@@ -1,7 +1,11 @@
 package com.mobelite.locationvoiture.controller;
+import com.mobelite.locationvoiture.dto.CarDto;
+import com.mobelite.locationvoiture.dto.ClientDto;
 import com.mobelite.locationvoiture.dto.ReservationDto;
+import com.mobelite.locationvoiture.exception.EntityNotFoundException;
 import com.mobelite.locationvoiture.model.Car;
 import com.mobelite.locationvoiture.model.Client;
+import com.mobelite.locationvoiture.repository.clientRepository;
 import com.mobelite.locationvoiture.model.reservationStatus;
 import com.mobelite.locationvoiture.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
