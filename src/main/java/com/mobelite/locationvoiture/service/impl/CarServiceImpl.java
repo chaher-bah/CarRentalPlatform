@@ -21,10 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.mobelite.locationvoiture.utils.constants.APP_ROUTE;
@@ -39,10 +36,7 @@ public class CarServiceImpl implements CarService {
         this.carRepository = carRepository;
     }
     @Override
-    public Car save(Car car) {
-//        Car savedCar = carRepository.save(car);
-        return carRepository.save(car);
-    }
+    public Car save(Car car) {return carRepository.save(car);}
 
     @Override
     public CarDto getCar(Long carId) {
@@ -165,5 +159,43 @@ public class CarServiceImpl implements CarService {
         *carRepository.save(CarDto.toEntity(cardto));*/
         carRepository.updateDisponibiliteToTrue(carId);
     }
+    @Override
+    public void deleteCar(Long carId){
+        if (carId == null) {
+            log.error("Car id is null cannot delete car");
+            throw new EntityNotValidException("Car id is null cannot delete car", ErrorCodes.CAR_NOT_VALID);
+        }
+        carRepository.deleteById(carId);
+    }
+    @Override
+    public Car updateCar(Long id, Car car, List<MultipartFile> images) {
+        Car existingCar = carRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Car not found with id: " + id, ErrorCodes.CAR_NOT_FOUND));
 
+        existingCar.setMarque(car.getMarque());
+        existingCar.setModele(car.getModele());
+        existingCar.setAnneemodele(car.getAnneemodele());
+        existingCar.setCarburant(car.getCarburant());
+        existingCar.setMatricule(car.getMatricule());
+        existingCar.setTransmission(car.getTransmission());
+        existingCar.setDateExpAssurance(car.getDateExpAssurance());
+        existingCar.setDateExpVignette(car.getDateExpVignette());
+        existingCar.setDateExpVisite(car.getDateExpVisite());
+        existingCar.setFraisLocation(car.getFraisLocation());
+
+        if (images != null && !images.isEmpty()) {
+            List<byte[]> imageBytesList = images.stream()
+                    .map(image -> {
+                        try {
+                            return image.getBytes();
+                        } catch (IOException e) {
+                            throw new EntityNotValidException("Failed to read image bytes", e);
+                        }
+                    })
+                    .collect(Collectors.toList());
+            existingCar.setImageUrls(imageBytesList);
+        }
+
+        return carRepository.save(existingCar);
+    }
 }

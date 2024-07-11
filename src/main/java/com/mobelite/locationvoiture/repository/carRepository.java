@@ -30,4 +30,5 @@ public interface carRepository extends JpaRepository<Car, Long> {
     @Transactional
     @Query("UPDATE Car c SET c.disponibilite = false WHERE c.id = ?1")
     void updateDisponibiliteToFalse(Long carId);
+
 }

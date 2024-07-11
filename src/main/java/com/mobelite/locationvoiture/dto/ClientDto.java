@@ -2,14 +2,18 @@ package com.mobelite.locationvoiture.dto;
 
 import com.mobelite.locationvoiture.model.Client;
 import jakarta.persistence.Lob;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ClientDto {
     private Long id;
     private String nom;
@@ -44,7 +48,6 @@ public class ClientDto {
             return null;
         }
         Client client = new Client();
-        client.setId(clientDto.getId());
         client.setNom(clientDto.getNom());
         client.setPrenom(clientDto.getPrenom());
         client.setEmail(clientDto.getEmail());

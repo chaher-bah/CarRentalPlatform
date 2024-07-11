@@ -1,6 +1,7 @@
 package com.mobelite.locationvoiture.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import jakarta.persistence.*;
@@ -51,12 +52,14 @@ public class Car {
     private LocalDate dateExpAssurance;
 
     @Column(name = "dispo")
-    private Boolean disponibilite;
+    private Boolean disponibilite=true;
     @ManyToOne(targetEntity = Admin.class)
     @JoinColumn(name = "Admin_id")
+    @JsonIgnore
     private Admin admin;
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
+    @JsonIgnore
     private List<Reservation> reservations=new ArrayList<>();
 
 
@@ -80,7 +83,6 @@ public class Car {
                 ", dateExpAssurance=" + dateExpAssurance +
                 ", dateExpVingnette=" + dateExpVignette +
                 ", dateExpVisite=" + dateExpVisite +
-                // Exclude reservations to avoid circular reference
                 '}';
     }
 }

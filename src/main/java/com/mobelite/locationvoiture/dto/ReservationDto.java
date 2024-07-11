@@ -5,8 +5,10 @@ import com.mobelite.locationvoiture.model.Reservation;
 import com.mobelite.locationvoiture.model.reservationStatus;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -14,6 +16,8 @@ import java.time.LocalDateTime;
 
 @Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ReservationDto {
     private Long id;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")

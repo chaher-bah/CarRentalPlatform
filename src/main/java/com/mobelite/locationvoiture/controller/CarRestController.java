@@ -51,11 +51,6 @@ public class CarRestController {
 
     }
 
-
-    //    @PostMapping(APP_ROUTE+"/cars/ajouter")
-//    public ResponseEntity<CarDto> save(@RequestBody CarDto car){
-//        return new ResponseEntity<>(carservice.save(car), HttpStatus.CREATED);
-//    }
     @GetMapping(value = APP_ROUTE+ "/cars/{carid}")
     public ResponseEntity<CarDto> getCar(@PathVariable("carid") Long carId){
         return new ResponseEntity<>(carservice.getCar(carId),HttpStatus.OK);
@@ -144,5 +139,23 @@ public class CarRestController {
             return ResponseEntity.notFound().build();
         }
     }
-
+    @DeleteMapping(value = APP_ROUTE+"/cars/{id}")
+    public ResponseEntity<String> deleteCar(@PathVariable("id") Long id){
+        carservice.deleteCar(id);
+        return new ResponseEntity<>("Car deleted successfully", HttpStatus.OK);
+    }
+    @PutMapping(value = APP_ROUTE+"/cars/update/{carId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Car> updateCar(
+            @PathVariable("carId") Long id,
+            @RequestPart("car") String carJson,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            Car car = objectMapper.readValue(carJson, Car.class);
+            Car updatedCar = carservice.updateCar(id, car, images);
+            return ResponseEntity.ok(updatedCar);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
 }

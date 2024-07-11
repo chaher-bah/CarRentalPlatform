@@ -21,4 +21,6 @@ public interface CarService {
     List<byte[]> getCarImages (Long carId);
     void saveCarImages(Long carId, List<MultipartFile> images);
     byte[] getCarImage(Long carId,int index);
+    void deleteCar(Long carId);
+     Car updateCar(Long id, Car car, List<MultipartFile> images);
 }
