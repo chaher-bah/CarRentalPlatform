@@ -1,5 +1,9 @@
 package com.mobelite.locationvoiture.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.ArrayList;
@@ -14,7 +18,9 @@ import java.util.List;
 public class Client extends User {
     private String cin;
     private String numTel;
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonIgnore
     @ToString.Exclude
     private List<Reservation> reservations=new ArrayList<>();
 
@@ -25,6 +31,7 @@ public class Client extends User {
 
 
     @OneToMany(targetEntity = Notification.class)
+    @JsonIgnore
     private List<Notification> notifications;
 
     public void addReservation(Reservation reservation) {

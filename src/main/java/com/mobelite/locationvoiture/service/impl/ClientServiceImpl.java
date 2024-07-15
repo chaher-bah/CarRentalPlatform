@@ -39,6 +39,7 @@ public class ClientServiceImpl implements ClientService {
             log.error("Car Validation errors: {}", errors);
             throw new EntityNotValidException("L'entite Client n'est pas valide", ErrorCodes.CLIENT_NOT_VALID,errors);
         }
+
         return ClientDto.fromEntity(clientRepository.save(ClientDto.toEntity(client)));
     }
 
@@ -68,7 +69,8 @@ public class ClientServiceImpl implements ClientService {
             log.error("Client id is null client cannot be deleted");
             return;
         }
-        clientRepository.deleteById(id);
+        Client client=clientRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("La Client n'est pas valide",ErrorCodes.CLIENT_NOT_FOUND));
+        clientRepository.deleteById(client.getId());
     }
 
     @Override
@@ -96,26 +98,35 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientDto getClientByEmail(String email) {
+    public List<ClientDto> getClientByEmail(String email) {
         if (!StringUtils.hasLength(email)){
             log.error("Client email is null");
             return null;
         }
-        Optional<Client> client = Optional.ofNullable(clientRepository.findByEmail(email));
-        return Optional.of(ClientDto.fromEntity(client.get())).orElseThrow(()->
-                new EntityNotFoundException("L'entite Client avec l'eamil"+email+"n'exicte pas dans le BD", ErrorCodes.CLIENT_NOT_FOUND));
+        List<Client> clients = clientRepository.findByEmail(email);
+        if (clients.isEmpty()) {
+            throw new EntityNotFoundException("L'entite Client avec l'email " + email + " n'exicte pas dans le BD", ErrorCodes.CLIENT_NOT_FOUND);
+        }
+
+        return clients.stream()
+                .map(ClientDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public ClientDto getClientByCin(String cin) {
+    public List<ClientDto> getClientByCin(String cin) {
         if (!StringUtils.hasLength(cin)){
             log.error("Client CIN is null");
             return null;
         }
-        Optional<Client> client = Optional.ofNullable(clientRepository.findByCin(cin));
-        return Optional.of(ClientDto.fromEntity(client.get())).orElseThrow(()->
-                new EntityNotFoundException("L'entite Client avec le CIN  "+cin+"n'exicte pas dans le BD", ErrorCodes.CLIENT_NOT_FOUND));
+        List<Client> clients = clientRepository.findByCin(cin);
+        if (clients.isEmpty()) {
+            throw new EntityNotFoundException("L'entite Client avec le CIN " + cin + " n'exicte pas dans le BD", ErrorCodes.CLIENT_NOT_FOUND);
+        }
 
+        return clients.stream()
+                .map(ClientDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -133,4 +144,21 @@ public class ClientServiceImpl implements ClientService {
         }
         clientRepository.save(client);
     }
+
+    @Override
+    public List<ClientDto> getClientByNomOrPrenom(String nom, String prenom) {
+        if (!StringUtils.hasLength(nom) && !StringUtils.hasLength(prenom)){
+            log.error("Client nom and prenom are null");
+            return null;
+        }
+        List<Client> clients = clientRepository.findByNomContainingIgnoreCaseOrPrenomContainingIgnoreCase(nom, prenom);
+        if (clients.isEmpty()) {
+            throw new EntityNotFoundException("L'entite Client avec le nom/prenom " + nom + "/" + prenom + " n'exicte pas dans le BD", ErrorCodes.CLIENT_NOT_FOUND);
+        }
+
+        return clients.stream()
+                .map(ClientDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
 }

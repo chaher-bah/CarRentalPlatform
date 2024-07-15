@@ -18,6 +18,6 @@ public interface ReservationService {
     void updateEndDate(Long reservationId, LocalDateTime newEndDate);
     List<ReservationDto> getReservedClient(Long clientid);
     Car getReservedCar(Long resrevationid);
-    void updateReservationStatus(Long reservationid, reservationStatus reservationStatus);
+//    void updateReservationStatus(Long reservationid, reservationStatus reservationStatus);
 
 }

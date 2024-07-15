@@ -51,14 +51,14 @@ public class ClientRestController {
     @Get the client by his email
      */
     @GetMapping(APP_ROUTE+"/client/email/{email}")
-    public ResponseEntity<ClientDto> getClientByEmail(@PathVariable("email") String email){
+    public ResponseEntity<List<ClientDto>> getClientByEmail(@PathVariable("email") String email){
         return new ResponseEntity<>(clientService.getClientByEmail(email), HttpStatus.OK);
     }
     /*
     @get the client by his cin /passsport number if not tunien
      */
     @GetMapping(APP_ROUTE+"/client/cin/{cin}")
-    public ResponseEntity<ClientDto> getClientByCin(@PathVariable("cin") String cin){
+    public ResponseEntity<List<ClientDto>> getClientByCin(@PathVariable("cin") String cin){
         return new ResponseEntity<>(clientService.getClientByCin(cin), HttpStatus.OK);
     }
     /*
@@ -100,6 +100,10 @@ public class ClientRestController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+    @GetMapping(APP_ROUTE+"/client/nom_prenom")
+    public ResponseEntity<List<ClientDto>> getByNomPrenom(@RequestParam(required = false) String nom, @RequestParam(required = false) String prenom){
+        return new ResponseEntity<>(clientService.getClientByNomOrPrenom(nom,prenom), HttpStatus.OK);
     }
 
 }

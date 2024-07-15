@@ -13,7 +13,9 @@ public interface ClientService {
     void deleteById(Long id);
     List<byte[]> getPermisImage(Long id);
     List<ReservationDto> getAllReservations(Long clientId);
-    ClientDto getClientByEmail(String email);
-    ClientDto getClientByCin(String cin);
+    List<ClientDto> getClientByCin(String cin);
+    List<ClientDto> getClientByEmail(String email);
     void savePermisImage(Long id, List<MultipartFile> imagefiles);
+    List<ClientDto> getClientByNomOrPrenom(String nom, String prenom);
+
 }

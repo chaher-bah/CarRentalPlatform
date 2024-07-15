@@ -1,10 +1,8 @@
 package com.mobelite.locationvoiture.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 @Builder
 @Data
 @NoArgsConstructor
@@ -17,6 +15,7 @@ public class Notification {
     private String message;
     @ManyToOne(targetEntity = Client.class)
     @JoinColumn(name = "client_id")
+    @ToString.Exclude
     private Client client;
     @ManyToOne(targetEntity = Admin.class)
     @JoinColumn(name = "Admin_id")

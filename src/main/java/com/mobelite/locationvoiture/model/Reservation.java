@@ -1,5 +1,6 @@
 package com.mobelite.locationvoiture.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @Table(name = "reservations")
 public class Reservation {
     @Id
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
@@ -21,22 +23,24 @@ public class Reservation {
     private reservationStatus reservationStatus;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id")
-    @ToString.Exclude
+    //@ToString.Exclude
     private Client client;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "Car_id")
+    @ToString.Exclude
     private Car car;
 
-    public BigDecimal getFraisAPayer() {
-        if (startDate != null && endDate != null && car != null && car.getFraisLocation() != null) {
-            long daysBetween = Duration.between(startDate, endDate).toDays();
-            return car.getFraisLocation().multiply(BigDecimal.valueOf(daysBetween));
-        }
-        return BigDecimal.ZERO;
-    }
+
+//    public BigDecimal getFraisAPayer() {
+//        if (startDate != null && endDate != null && car != null && car.getFraisLocation() != null) {
+//            long daysBetween = Duration.between(startDate, endDate).toDays();
+//            return car.getFraisLocation().multiply(BigDecimal.valueOf(daysBetween));
+//        }
+//        return BigDecimal.ZERO;
+//    }
     @Override
     public String toString() {
         return "Reservation{" +

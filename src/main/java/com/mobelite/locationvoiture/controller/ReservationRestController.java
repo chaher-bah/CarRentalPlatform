@@ -8,6 +8,7 @@ import com.mobelite.locationvoiture.model.Client;
 import com.mobelite.locationvoiture.repository.clientRepository;
 import com.mobelite.locationvoiture.model.reservationStatus;
 import com.mobelite.locationvoiture.service.ReservationService;
+import com.mobelite.locationvoiture.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +24,12 @@ import static com.mobelite.locationvoiture.utils.constants.APP_ROUTE;
 @RestController
 public class ReservationRestController {
     private final ReservationService reservationService;
+    private final ClientService clientService;
+
     @Autowired
-    public ReservationRestController(ReservationService reservationService) {
+    public ReservationRestController(ReservationService reservationService, ClientService clientService) {
         this.reservationService = reservationService;
+        this.clientService = clientService;
     }
     @PostMapping(APP_ROUTE+"/reservation/ajouter")
     public ResponseEntity<ReservationDto> save(@RequestBody ReservationDto reservation){
@@ -117,7 +121,14 @@ public class ReservationRestController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid status value");
         }
-        reservationService.updateReservationStatus(reservationid, newReservationStatus);
+        ReservationDto reservation = reservationService.getReservation(reservationid);
+        ClientDto client=reservation.getClient();
+        if (client.getId() == null) {
+            client = clientService.save(client);
+            reservation.setClient(client);
+        }
+        reservation.setReservationStatus(newReservationStatus);
+        reservationService.save(reservation);
         return ResponseEntity.ok("Status successfully");
     }
 

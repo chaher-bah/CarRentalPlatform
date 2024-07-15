@@ -1,6 +1,8 @@
 package com.mobelite.locationvoiture.service.impl;
 
 import com.mobelite.locationvoiture.dto.CarDto;
+import com.mobelite.locationvoiture.service.ClientService;
+import com.mobelite.locationvoiture.dto.ClientDto;
 import com.mobelite.locationvoiture.dto.ReservationDto;
 import com.mobelite.locationvoiture.exception.EntityNotFoundException;
 import com.mobelite.locationvoiture.exception.EntityNotValidException;
@@ -11,6 +13,7 @@ import com.mobelite.locationvoiture.model.Client;
 import com.mobelite.locationvoiture.model.Reservation;
 import com.mobelite.locationvoiture.model.reservationStatus;
 import com.mobelite.locationvoiture.repository.reservationRepository;
+import com.mobelite.locationvoiture.repository.carRepository;
 import com.mobelite.locationvoiture.repository.clientRepository;
 import com.mobelite.locationvoiture.service.ReservationService;
 import com.mobelite.locationvoiture.validators.ReservationValidator;
@@ -31,10 +34,12 @@ import java.util.stream.Collectors;
 public class ReservationServiceImpl implements ReservationService {
     private final reservationRepository reservationRepository;
     public final clientRepository clientRepository;
+    public final carRepository carRepository;
     @Autowired
-    public ReservationServiceImpl(reservationRepository reservationRepository, com.mobelite.locationvoiture.repository.clientRepository clientRepository) {
+    public ReservationServiceImpl(reservationRepository reservationRepository, clientRepository clientRepository,carRepository carRepository) {
         this.reservationRepository = reservationRepository;
         this.clientRepository = clientRepository;
+        this.carRepository=carRepository;
     }
 
     @Override
@@ -44,15 +49,18 @@ public class ReservationServiceImpl implements ReservationService {
             log.error("Reservation Validation errors: {}", errors);
             throw new EntityNotValidException("L'entité reservation n'est pas valide", ErrorCodes.RESERVATION_NOT_VALID, errors);
         }
-
+//        Reservation presavedReservation=reservationRepository.save(ReservationDto.toEntity(reservationDto));
         Client client = clientRepository.findById(reservationDto.getClient().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Client not found", ErrorCodes.CLIENT_NOT_FOUND));
-
-        Reservation reservation = ReservationDto.toEntity(reservationDto);
-        reservation.setClient(client);
-
-        Reservation savedReservation = reservationRepository.save(reservation);
-        return ReservationDto.fromEntity(savedReservation);
+        Car car = carRepository.findById(reservationDto.getCar().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Car not found", ErrorCodes.CAR_NOT_FOUND));
+//        Reservation reservation = ReservationDto.toEntity(reservationDto);
+//        presavedReservation.setClient(client);
+//
+//        Reservation savedReservation = reservationRepository.save(presavedReservation);
+        reservationDto.setClient(ClientDto.fromEntity(client));
+        reservationDto.setCar(CarDto.fromEntity(car));
+        return ReservationDto.fromEntity(reservationRepository.save(ReservationDto.toEntity(reservationDto)));
     }
 
     @Override
@@ -113,20 +121,26 @@ public class ReservationServiceImpl implements ReservationService {
         return reservationRepository.findCarById(resid);
     }
 
-
-    @Override
-    public void updateReservationStatus(Long reservationid , reservationStatus reservationstatus) {
-        if (reservationid==null || !reservationRepository.existsById(reservationid)) {
-            log.error("id reservation not valid cannot update reservation status");
-            throw new InvalidOperationException("id reservation not valid cannot update status",ErrorCodes.RESERVATION_CAN_NOT_BE_MODIFIED);
-        };
-        if (!StringUtils.hasLength(String.valueOf(reservationstatus))) {
-            log.error("status not valid cannot update reservation status");
-            throw new InvalidOperationException("reservation status not valid cannot update status",ErrorCodes.RESERVATION_CAN_NOT_BE_MODIFIED);
-        };
-        ReservationDto reservation =getReservation(reservationid);
-        reservation.setReservationStatus(reservationstatus);
-        ReservationDto.fromEntity(reservationRepository.save(ReservationDto.toEntity(reservation)));
-    }
+//
+//    @Override
+//    public void updateReservationStatus(Long reservationid , reservationStatus reservationstatus) {
+//        if (reservationid==null || !reservationRepository.existsById(reservationid)) {
+//            log.error("id reservation not valid cannot update reservation status");
+//            throw new InvalidOperationException("id reservation not valid cannot update status",ErrorCodes.RESERVATION_CAN_NOT_BE_MODIFIED);
+//        };
+//        if (!StringUtils.hasLength(String.valueOf(reservationstatus))) {
+//            log.error("status not valid cannot update reservation status");
+//            throw new InvalidOperationException("reservation status not valid cannot update status",ErrorCodes.RESERVATION_CAN_NOT_BE_MODIFIED);
+//        };
+//
+//        ReservationDto reservation =getReservation(reservationid);
+//        ClientDto client=reservation.getClient();
+//        if (client.getId() == null) {
+//            clientRepository.
+//            reservation.setClient(client);
+//        }
+//        reservation.setReservationStatus(reservationstatus);
+//        ReservationDto.fromEntity(reservationRepository.save(ReservationDto.toEntity(reservation)));
+//    }
 
 }
