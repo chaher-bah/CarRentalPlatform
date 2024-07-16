@@ -1,5 +1,6 @@
 package com.mobelite.locationvoiture.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,25 +23,26 @@ public class Reservation {
     @Enumerated (EnumType.STRING)
     private reservationStatus reservationStatus;
 
-
-    @ManyToOne(fetch = FetchType.EAGER)
+    //must be always eager
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name = "client_id")
-    //@ToString.Exclude
+    @ToString.Exclude
     private Client client;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "Car_id")
     @ToString.Exclude
+    @JsonBackReference
     private Car car;
 
 
-//    public BigDecimal getFraisAPayer() {
-//        if (startDate != null && endDate != null && car != null && car.getFraisLocation() != null) {
-//            long daysBetween = Duration.between(startDate, endDate).toDays();
-//            return car.getFraisLocation().multiply(BigDecimal.valueOf(daysBetween));
-//        }
-//        return BigDecimal.ZERO;
-//    }
+    public BigDecimal getFraisAPayer() {
+        if (startDate != null && endDate != null && car != null && car.getFraisLocation() != null) {
+            long daysBetween = Duration.between(startDate, endDate).toDays();
+            return car.getFraisLocation().multiply(BigDecimal.valueOf(daysBetween));
+        }
+        return BigDecimal.ZERO;
+    }
     @Override
     public String toString() {
         return "Reservation{" +

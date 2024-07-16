@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.mobelite.locationvoiture.utils.constants.APP_ROUTE;
@@ -110,7 +111,7 @@ public class ReservationRestController {
     @update: the status of reservation
     @param:the reservation id and the status wanted to be
      */
-    @PatchMapping(APP_ROUTE+"/reservation/status/{reservationid}")
+    @PostMapping(APP_ROUTE+"/reservation/status/{reservationid}")
     ResponseEntity<String> updateReservationStatus(@PathVariable("reservationid") Long reservationid,@RequestBody UpdateStatusRequest newReservationStatusRequest){
 
         String statusStr = newReservationStatusRequest.getStatus();
@@ -128,6 +129,12 @@ public class ReservationRestController {
             reservation.setClient(client);
         }
         reservation.setReservationStatus(newReservationStatus);
+        List<ReservationDto> reservations = client.getReservations();
+        if (reservations == null) {
+            reservations = new ArrayList<>();
+        }
+        reservations.add(reservation);
+        reservation.getClient().setReservations(reservations);
         reservationService.save(reservation);
         return ResponseEntity.ok("Status successfully");
     }

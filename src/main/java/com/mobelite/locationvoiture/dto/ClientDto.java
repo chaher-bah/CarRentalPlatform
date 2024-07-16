@@ -38,7 +38,6 @@ public class ClientDto {
                 .email(client.getEmail())
                 .cin(client.getCin())
                 .numTel(client.getNumTel())
-                .reservations(null)
                 .photoPermis(client.getPhotoPermis())
                 .build();
     }
@@ -60,7 +59,6 @@ public class ClientDto {
         client.setEmail(clientDto.getEmail());
         client.setCin(clientDto.getCin());
         client.setNumTel(clientDto.getNumTel());
-
         client.setPhotoPermis(clientDto.getPhotoPermis());
         return client;
     }

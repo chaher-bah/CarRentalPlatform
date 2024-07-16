@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Builder
@@ -30,7 +31,7 @@ public class ReservationDto {
 
     private ClientDto client;
     private CarDto car;
-//    private BigDecimal fraisAPayer;
+    private BigDecimal fraisAPayer;
 
     public static ReservationDto fromEntity(Reservation reservation) {
         if (reservation == null) {
@@ -42,9 +43,9 @@ public class ReservationDto {
                 .startDate(reservation.getStartDate())
                 .endDate(reservation.getEndDate())
                 .reservationStatus(reservation.getReservationStatus())
-                .client(ClientDto.clientEntityToDto(reservation.getClient()))
+                .client(ClientDto.fromEntity(reservation.getClient()))
                 .car(CarDto.fromEntity(reservation.getCar()))
-//                .fraisAPayer(reservation.getFraisAPayer())
+                .fraisAPayer(reservation.getFraisAPayer())
                 .build();
     }
 
@@ -53,14 +54,14 @@ public class ReservationDto {
             return null;
         }
 
-        return Reservation.builder()
-                .id(reservationDto.getId())
-                .startDate(reservationDto.getStartDate())
-                .endDate(reservationDto.getEndDate())
-                .reservationStatus(reservationDto.getReservationStatus())
-                .client(ClientDto.toEntity(reservationDto.getClient()))
-                .car(CarDto.toEntity(reservationDto.getCar()))
-                .build();
+        Reservation Reservation = new Reservation();
+        Reservation.setId(reservationDto.getId());
+        Reservation.setStartDate(reservationDto.getStartDate());
+        Reservation.setEndDate(reservationDto.getEndDate());
+        Reservation.setReservationStatus(reservationDto.getReservationStatus());
+        Reservation.setClient(ClientDto.toEntity(reservationDto.getClient()));
+        Reservation.setCar(CarDto.toEntity(reservationDto.getCar()));
+        return Reservation;
     }
 
     public boolean isAccepted() {
