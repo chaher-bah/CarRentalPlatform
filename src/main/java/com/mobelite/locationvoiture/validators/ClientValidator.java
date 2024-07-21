@@ -15,7 +15,6 @@ public class ClientValidator {
             errors.add("Prenom n'est pas valide");
             errors.add("Cin n'est pas valide");
             errors.add("Numero de Tel n'est pas valide");
-            errors.add("Email n'est pas valide");
         }
         assert (clientDto != null);
         if (!StringUtils.hasText(clientDto.getNom())){
@@ -34,10 +33,6 @@ public class ClientValidator {
         } else if (!(clientDto.getNumTel().chars().allMatch((c -> Character.isDigit(c) || c == '+')))){
             errors.add("Numero de Tel doit etre numerique ");
         }
-        if (!StringUtils.hasText(clientDto.getEmail())){
-            errors.add("Email n'est pas valide");
-        }
-
 
         return errors;
     }

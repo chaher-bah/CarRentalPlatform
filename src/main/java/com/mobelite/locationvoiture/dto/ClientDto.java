@@ -1,7 +1,6 @@
 package com.mobelite.locationvoiture.dto;
 
 import com.mobelite.locationvoiture.model.Client;
-import com.mobelite.locationvoiture.model.Reservation;
 import jakarta.persistence.Lob;
 import lombok.*;
 import org.modelmapper.ModelMapper;
@@ -9,6 +8,8 @@ import org.modelmapper.ModelMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.mobelite.locationvoiture.utils.constants.APP_ROUTE;
 
 @Data
 @Builder
@@ -23,7 +24,7 @@ public class ClientDto {
     private String numTel;
     private List<ReservationDto> reservations;
     @Lob
-    private List<byte[]> photoPermis ;
+    private List<String> photoPermis ;
 
     private List<NotificationDto> notifications;
     public static ClientDto fromEntity(Client client) {
@@ -38,7 +39,9 @@ public class ClientDto {
                 .email(client.getEmail())
                 .cin(client.getCin())
                 .numTel(client.getNumTel())
-                .photoPermis(client.getPhotoPermis())
+                .photoPermis(client.getPhotoPermis().stream()
+                        .map(img -> "http://localhost:2020/"+APP_ROUTE+"/client/" + client.getId() + "/images/" + (client.getPhotoPermis().indexOf(img) ))
+                        .collect(Collectors.toList()))
                 .build();
     }
     //dto---> entity
@@ -59,7 +62,7 @@ public class ClientDto {
         client.setEmail(clientDto.getEmail());
         client.setCin(clientDto.getCin());
         client.setNumTel(clientDto.getNumTel());
-        client.setPhotoPermis(clientDto.getPhotoPermis());
+        client.setPhotoPermis(null);
         return client;
     }
 }

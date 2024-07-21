@@ -5,6 +5,7 @@ import com.mobelite.locationvoiture.dto.ReservationDto;
 import com.mobelite.locationvoiture.exception.EntityNotFoundException;
 import com.mobelite.locationvoiture.exception.EntityNotValidException;
 import com.mobelite.locationvoiture.exception.ErrorCodes;
+import com.mobelite.locationvoiture.model.Car;
 import com.mobelite.locationvoiture.model.Client;
 import com.mobelite.locationvoiture.model.Reservation;
 import com.mobelite.locationvoiture.repository.clientRepository;
@@ -36,12 +37,17 @@ public class ClientServiceImpl implements ClientService {
     public ClientDto save(ClientDto client) {
         List<String> errors = ClientValidator.validation(client);
         if (!errors.isEmpty()) {
-            log.error("Car Validation errors: {}", errors);
+            log.error("client Validation errors: {}", errors);
             throw new EntityNotValidException("L'entite Client n'est pas valide", ErrorCodes.CLIENT_NOT_VALID,errors);
         }
 
         return ClientDto.fromEntity(clientRepository.save(ClientDto.toEntity(client)));
     }
+    @Override
+    public Client add (Client client) {return clientRepository.save(client);}
+
+
+
 
     @Override
     public ClientDto getClientById(Long id) {
@@ -74,17 +80,20 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<byte[]> getPermisImage(Long id) {
-        if (id == null) {
-            log.error("client id is null image cannot be retrieved");
-            return null;
+    public byte[] getPermisImage(Long id,int imgIndex) {
+        Client client = clientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Client not found"));
+        if (imgIndex < 0 || imgIndex >= client.getPhotoPermis().size()) {
+            throw new EntityNotFoundException("Image not found");
         }
-        Client client = clientRepository.findById(id).orElseThrow(() -> new RuntimeException("Client not found"));
-        if ((client.getPhotoPermis())==null){
-            log.error("Image permis n'existe pas");
-            return null;
-        }
-        return ImageUtils.decompressImages(client.getPhotoPermis());
+        return client.getPhotoPermis().get(imgIndex);
+    }
+
+    @Override
+    public List<byte[]> getPermisImages(Long clientId) {
+        Client client = clientRepository.findById(clientId)
+                .orElseThrow(() -> new EntityNotFoundException("Client not found"));
+        return client.getPhotoPermis();
     }
 
     @Override
@@ -133,11 +142,14 @@ public class ClientServiceImpl implements ClientService {
     @Transactional
     public void savePermisImage(Long id, List<MultipartFile> imagefiles) {
         Client client = clientRepository.findById(id).orElseThrow(() -> new RuntimeException("Client not found"));
-        if (!imagefiles.isEmpty() && imagefiles.size() > 5 ){
-            throw new EntityNotValidException("L'entite Client n'est pas valide [check photos/don't exceed 5]");
+        if (!imagefiles.isEmpty() && imagefiles.size() > 4 ){
+            throw new EntityNotValidException("L'entite Client n'est pas valide [check photos/don't exceed 4]");
         }
         try {
-            for (MultipartFile imagefile : imagefiles) {client.getPhotoPermis().add(ImageUtils.compressImage(imagefile.getBytes()));    }
+            for (MultipartFile image : imagefiles) {
+                byte[] imageBytes = image.getBytes();
+                client.getPhotoPermis().add(imageBytes);
+            }
         } catch (IOException e) {
             log.error("a problem while uploading image");
             throw new RuntimeException(e);

@@ -1,7 +1,10 @@
 package com.mobelite.locationvoiture.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mobelite.locationvoiture.dto.ClientDto;
 import com.mobelite.locationvoiture.dto.ReservationDto;
+import com.mobelite.locationvoiture.model.Client;
 import com.mobelite.locationvoiture.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -24,9 +27,18 @@ public class ClientRestController {
     public ClientRestController(ClientService clientService) {
         this.clientService = clientService;
     }
-    @PostMapping(APP_ROUTE+"/client/ajouter")
-    public ResponseEntity<ClientDto> save(@RequestBody ClientDto client){
-        return new ResponseEntity<>(clientService.save(client), HttpStatus.CREATED);
+    @PostMapping(APP_ROUTE+"/client/easy/ajouter")
+    public ResponseEntity<ClientDto> saveeasy(@RequestBody ClientDto client){return new ResponseEntity<>(clientService.save(client), HttpStatus.CREATED);}
+    @PostMapping(value = APP_ROUTE+"/client/ajouter",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Client> save(
+            @RequestPart("client") String clientJson,
+            @RequestPart("images") List<MultipartFile>images) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Client client=mapper.readValue(clientJson, Client.class);
+        Client savedClient=clientService.add(client);
+        clientService.savePermisImage(savedClient.getId(),images);
+        return ResponseEntity.ok(savedClient);
+
     }
     /*
     @Get the client by its id
@@ -90,17 +102,30 @@ public class ClientRestController {
         }
     }
 
-    @GetMapping(APP_ROUTE + "/client/{clientid}/permis")
-    public ResponseEntity<List<byte[]>> getPermisImage(@PathVariable("clientid") Long id) {
-        List<byte[]> images = clientService.getPermisImage(id);
+    @GetMapping(value=APP_ROUTE + "/client/{clientid}/images")
+    public ResponseEntity<List<byte[]>> getPermisImages(@PathVariable("clientid") Long id) {
+        List<byte[]> images = clientService.getPermisImages(id);
         if (images != null ) {
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(MediaType.IMAGE_JPEG); // Change to the appropriate image type if necessary (e.g., IMAGE_PNG)
-            return new ResponseEntity<>(images, HttpStatus.OK);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(images);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    @GetMapping(value = APP_ROUTE + "/client/{id}/images/{imageIndex}")
+    public ResponseEntity<byte[]> getClientImage(@PathVariable("id") Long id, @PathVariable("imageIndex") int imageIndex) {
+        byte[] imageBytes = clientService.getPermisImage(id, imageIndex);
+        if (imageBytes != null) {
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"image_" + id + "_" + imageIndex + ".jpg\"")
+                    .body(imageBytes);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping(APP_ROUTE+"/client/nom_prenom")
     public ResponseEntity<List<ClientDto>> getByNomPrenom(@RequestParam(required = false) String nom, @RequestParam(required = false) String prenom){
         return new ResponseEntity<>(clientService.getClientByNomOrPrenom(nom,prenom), HttpStatus.OK);

@@ -38,7 +38,7 @@ public class Car {
     @ElementCollection
     @CollectionTable(name = "car_photos", joinColumns = @JoinColumn(name = "car_id"))
     @Lob
-    @Fetch(FetchMode.JOIN)
+//    @Fetch(FetchMode.JOIN)
     @Column(name = "photo")
     private List<byte[]> imageUrls = new ArrayList<>();
 

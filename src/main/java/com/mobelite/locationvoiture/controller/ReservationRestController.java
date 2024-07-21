@@ -5,6 +5,7 @@ import com.mobelite.locationvoiture.dto.ReservationDto;
 import com.mobelite.locationvoiture.exception.EntityNotFoundException;
 import com.mobelite.locationvoiture.model.Car;
 import com.mobelite.locationvoiture.model.Client;
+import com.mobelite.locationvoiture.model.Reservation;
 import com.mobelite.locationvoiture.repository.clientRepository;
 import com.mobelite.locationvoiture.model.reservationStatus;
 import com.mobelite.locationvoiture.service.ReservationService;
@@ -111,7 +112,7 @@ public class ReservationRestController {
     @update: the status of reservation
     @param:the reservation id and the status wanted to be
      */
-    @PostMapping(APP_ROUTE+"/reservation/status/{reservationid}")
+    @PatchMapping(APP_ROUTE+"/reservation/status/{reservationid}")
     ResponseEntity<String> updateReservationStatus(@PathVariable("reservationid") Long reservationid,@RequestBody UpdateStatusRequest newReservationStatusRequest){
 
         String statusStr = newReservationStatusRequest.getStatus();
@@ -138,6 +139,13 @@ public class ReservationRestController {
         reservationService.save(reservation);
         return ResponseEntity.ok("Status successfully");
     }
+
+    @PutMapping(APP_ROUTE+"/reservation/update/{reservationid}")
+    ResponseEntity<ReservationDto> UpdateReservationData(@PathVariable ("reservationid")Long reservationid, @RequestBody ReservationDto reservationDto){
+        ReservationDto reservation = reservationService.updateReservation(reservationid,reservationDto);
+        return new ResponseEntity<>(reservation, HttpStatus.OK);
+    }
+
 
 //    @PreAuthorize("hasRole('Admin_Role')")
     public static  class UpdateStatusRequest{

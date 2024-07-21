@@ -20,4 +20,5 @@ public interface ReservationService {
     Car getReservedCar(Long resrevationid);
     void updateReservationStatus(Long reservationid, reservationStatus reservationStatus);
 
+    ReservationDto updateReservation(Long reservationid, ReservationDto reservationDto);
 }

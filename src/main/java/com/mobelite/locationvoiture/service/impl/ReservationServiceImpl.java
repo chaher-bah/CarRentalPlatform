@@ -58,7 +58,11 @@ public class ReservationServiceImpl implements ReservationService {
         reservation.setReservationStatus(reservationDto.getReservationStatus());
         // Fetch the existing client and car from the database
         Client client = clientRepository.findById(reservationDto.getClient().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Client not found", ErrorCodes.CLIENT_NOT_FOUND));
+                .orElseGet(() -> {
+                    Client newClient = ClientDto.toEntity(reservationDto.getClient());
+                    newClient = clientRepository.save(newClient);
+                    return newClient;
+                });
         client.addReservation(reservation);
         reservation.setClient(client);
 
@@ -66,11 +70,6 @@ public class ReservationServiceImpl implements ReservationService {
                 .orElseThrow(() -> new EntityNotFoundException("Car not found", ErrorCodes.CAR_NOT_FOUND));
         reservation.setCar(car);
 
-
-//        Reservation reservation = ReservationDto.toEntity(reservationDto);
-//        presavedReservation.setClient(client);
-//
-//        Reservation savedReservation = reservationRepository.save(presavedReservation);
         reservation.getClient().addReservation(reservation);
         return ReservationDto.fromEntity(reservationRepository.save(reservation));
     }
@@ -153,6 +152,34 @@ public class ReservationServiceImpl implements ReservationService {
         }
         reservation.setReservationStatus(reservationstatus);
         ReservationDto.fromEntity(reservationRepository.save(ReservationDto.toEntity(reservation)));
+    }
+
+    @Override
+    public ReservationDto updateReservation(Long id, ReservationDto reservationDto) {
+        List<String> errors = ReservationValidator.validation(reservationDto);
+        if (!errors.isEmpty()) {
+            throw new EntityNotValidException("L'entité reservation n'est pas valide", ErrorCodes.RESERVATION_NOT_VALID, errors);
+        }
+
+        Reservation existingReservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Reservation not found", ErrorCodes.RESERVATION_NOT_FOUND));
+
+        Reservation reservation = ReservationDto.toEntity(reservationDto);
+        reservation.setId(existingReservation.getId());
+        reservation.setStartDate(reservationDto.getStartDate());
+        reservation.setEndDate(reservationDto.getEndDate());
+        reservation.setReservationStatus(reservationDto.getReservationStatus());
+
+        Client client = clientRepository.findById(reservationDto.getClient().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Client not found", ErrorCodes.CLIENT_NOT_FOUND));
+        reservation.setClient(client);
+
+        Car car = carRepository.findById(reservationDto.getCar().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Car not found", ErrorCodes.CAR_NOT_FOUND));
+        reservation.setCar(car);
+
+        Reservation updatedReservation = reservationRepository.save(reservation);
+        return ReservationDto.fromEntity(updatedReservation);
     }
 
 }

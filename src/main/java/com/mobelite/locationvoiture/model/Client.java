@@ -28,6 +28,7 @@ public class Client extends User {
     @ElementCollection
     @CollectionTable(name = "client_photos", joinColumns = @JoinColumn(name = "client_id"))
     @Column(name = "photo")
+    @Lob
     private List<byte[]> photoPermis = new ArrayList<>();
 
 
