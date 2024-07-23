@@ -2,6 +2,7 @@ package com.mobelite.locationvoiture.service;
 
 import com.mobelite.locationvoiture.dto.CarDto;
 import com.mobelite.locationvoiture.model.Car;
+import com.mobelite.locationvoiture.model.Charge;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
@@ -23,4 +24,7 @@ public interface CarService {
     byte[] getCarImage(Long carId,int index);
     void deleteCar(Long carId);
      Car updateCar(Long id, Car car, List<MultipartFile> images);
+    Car addCharges(Long id,List<Charge> charges );
+
+    boolean removeChargeFromCar(Long carId, String chargeLabel);
 }

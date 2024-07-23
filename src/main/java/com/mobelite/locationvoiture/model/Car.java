@@ -65,6 +65,9 @@ public class Car {
     @JsonIgnore
     private List<Reservation> reservations=new ArrayList<>();
 
+    @ElementCollection
+    @CollectionTable(name = "car_charges", joinColumns = @JoinColumn(name = "car_id"))
+    private List<Charge> charges = new ArrayList<>();
 
     public void addReservation(Reservation reservation) {
         reservations.add(reservation);

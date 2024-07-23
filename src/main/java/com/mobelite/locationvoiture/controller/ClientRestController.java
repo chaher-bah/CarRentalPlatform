@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mobelite.locationvoiture.dto.ClientDto;
 import com.mobelite.locationvoiture.dto.ReservationDto;
+import com.mobelite.locationvoiture.model.Car;
 import com.mobelite.locationvoiture.model.Client;
 import com.mobelite.locationvoiture.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +33,13 @@ public class ClientRestController {
     @PostMapping(value = APP_ROUTE+"/client/ajouter",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Client> save(
             @RequestPart("client") String clientJson,
-            @RequestPart("images") List<MultipartFile>images) throws JsonProcessingException {
+            @RequestPart(value = "images",required = false) List<MultipartFile>images) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Client client=mapper.readValue(clientJson, Client.class);
         Client savedClient=clientService.add(client);
-        clientService.savePermisImage(savedClient.getId(),images);
+        if (!(images ==null)){
+        clientService.savePermisImage(savedClient.getId(),images);}
+
         return ResponseEntity.ok(savedClient);
 
     }
@@ -131,4 +134,18 @@ public class ClientRestController {
         return new ResponseEntity<>(clientService.getClientByNomOrPrenom(nom,prenom), HttpStatus.OK);
     }
 
+    @PutMapping(value = APP_ROUTE+"/client/update/{clientId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Client> updateClient(
+            @PathVariable("clientId") Long id,
+            @RequestPart("client") String clientJson,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            Client client = objectMapper.readValue(clientJson, Client.class);
+            Client updatedClient = clientService.update(id, client, images);
+            return ResponseEntity.ok(updatedClient);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
 }

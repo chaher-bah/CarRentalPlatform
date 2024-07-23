@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
-
+import com.mobelite.locationvoiture.model.Charge;
 import static com.mobelite.locationvoiture.utils.constants.APP_ROUTE;
 
 @AllArgsConstructor
@@ -27,6 +27,8 @@ public class CarDto {
     private String carburant;
     private String transmission;
     private List<String> imageUrls;
+    private List<Charge> charges;
+
     private Boolean disponibilite;
 
     public static CarDto fromEntity(Car car) {
@@ -46,6 +48,7 @@ public class CarDto {
                         .collect(Collectors.toList()))
                 .disponibilite(car.getDisponibilite())
                 .carburant(car.getCarburant())
+                .charges(car.getCharges())
                 .build();
     }
 
@@ -64,6 +67,7 @@ public class CarDto {
                 .anneemodele(carDto.getAnneemodele())
                 .disponibilite(carDto.getDisponibilite())
                 .carburant(carDto.getCarburant())
+                .charges(carDto.getCharges())
                 .build();
     }
 }

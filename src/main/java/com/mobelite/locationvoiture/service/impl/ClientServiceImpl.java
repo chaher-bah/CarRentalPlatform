@@ -172,5 +172,28 @@ public class ClientServiceImpl implements ClientService {
                 .map(ClientDto::fromEntity)
                 .collect(Collectors.toList());
     }
+    @Override
+    public Client update(Long id, Client client, List<MultipartFile> imagefiles) {
+        Client exictingClient= (clientRepository.findById(id)
+                .orElseThrow(()->new EntityNotFoundException("Client with id"+id+"not found", ErrorCodes.CLIENT_NOT_FOUND)));
+        exictingClient.setNom(client.getNom());
+        exictingClient.setPrenom(client.getPrenom());
+        exictingClient.setEmail(client.getEmail());
+        exictingClient.setCin(client.getCin());
+        exictingClient.setReservations(client.getReservations());
+        if (imagefiles != null && !imagefiles.isEmpty()) {
+            List<byte[]> imageBytesList = imagefiles.stream()
+                    .map(image -> {
+                        try {
+                            return image.getBytes();
+                        } catch (IOException e) {
+                            throw new EntityNotValidException("Failed to read image bytes", e);
+                        }
+                    })
+                    .collect(Collectors.toList());
+            exictingClient.setPhotoPermis(imageBytesList);
+        }
 
+        return clientRepository.save(exictingClient);
+    }
 }

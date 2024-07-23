@@ -5,6 +5,7 @@ import com.mobelite.locationvoiture.exception.EntityNotFoundException;
 import com.mobelite.locationvoiture.exception.EntityNotValidException;
 import com.mobelite.locationvoiture.exception.ErrorCodes;
 import com.mobelite.locationvoiture.model.Car;
+import com.mobelite.locationvoiture.model.Charge;
 import com.mobelite.locationvoiture.repository.carRepository;
 import com.mobelite.locationvoiture.service.CarService;
 import com.mobelite.locationvoiture.validators.CarValidator;
@@ -198,4 +199,36 @@ public class CarServiceImpl implements CarService {
 
         return carRepository.save(existingCar);
     }
+    @Override
+    public Car addCharges(Long carId, List<Charge> charges) {
+        Optional<Car> carOptional = carRepository.findById(carId);
+
+        if (carOptional.isEmpty()) {
+            throw new RuntimeException("Car not found with id " + carId);
+        }
+
+        Car car = carOptional.get();
+        for (Charge charge : charges) {
+            car.getCharges().add(new Charge(charge.getLabel(), charge.getCharge()));
+        }
+
+        return carRepository.save(car);
+    }
+    public boolean removeChargeFromCar(Long carId, String chargeID) {
+        Optional<Car> carOptional = carRepository.findById(carId);
+
+        if (!carOptional.isPresent()) {
+            return false;
+        }
+
+        Car car = carOptional.get();
+        boolean removed = car.getCharges().removeIf(charge -> charge.getId().equals(chargeID));
+
+        if (removed) {
+            carRepository.save(car);
+        }
+
+        return removed;
+    }
+
 }

@@ -20,4 +20,5 @@ public interface ClientService {
     void savePermisImage(Long id, List<MultipartFile> imagefiles);
     List<ClientDto> getClientByNomOrPrenom(String nom, String prenom);
     Client add(Client client);
+    Client update(Long id,Client client,List<MultipartFile> imagefiles);
 }

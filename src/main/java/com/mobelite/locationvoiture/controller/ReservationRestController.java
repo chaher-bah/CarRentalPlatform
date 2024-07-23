@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.mobelite.locationvoiture.utils.constants.APP_ROUTE;
-
+//to get access in the front
 @CrossOrigin(origins = "*")
 @RestController
 public class ReservationRestController {

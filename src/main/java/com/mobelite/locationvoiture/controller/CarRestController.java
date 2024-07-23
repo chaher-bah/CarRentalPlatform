@@ -3,6 +3,7 @@ package com.mobelite.locationvoiture.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mobelite.locationvoiture.dto.CarDto;
+import com.mobelite.locationvoiture.model.Charge;
 import com.mobelite.locationvoiture.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -156,6 +157,25 @@ public class CarRestController {
             return ResponseEntity.ok(updatedCar);
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
+        }
+    }
+    @PatchMapping(value = APP_ROUTE+"/cars/{carId}/charge")
+    public ResponseEntity<?> addChargestoCar(@PathVariable("carId") Long carId, @RequestBody List<Charge> charges){
+        try {
+            Car updatedCar = carservice.addCharges(carId, charges);
+            return ResponseEntity.ok(updatedCar);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @DeleteMapping(value = APP_ROUTE+"/cars/{carId}/charge/{id}")
+    public ResponseEntity<?> deleteChargeFromCar(@PathVariable("carId") Long carId, @PathVariable("id") String chargeid) {
+        boolean isRemoved = carservice.removeChargeFromCar(carId, chargeid);
+
+        if (isRemoved) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 }

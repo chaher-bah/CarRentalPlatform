@@ -20,7 +20,7 @@ public class Client extends User {
     private String cin;
     private String numTel;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     @ToString.Exclude
     private List<Reservation> reservations=new ArrayList<>();
