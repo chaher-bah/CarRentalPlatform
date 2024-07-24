@@ -28,8 +28,8 @@ public class ClientDto {
 
     private List<NotificationDto> notifications;
     public static ClientDto fromEntity(Client client) {
-        if (client == null){
-            //to do exception
+        if (client == null) {
+            // to do exception
             return null;
         }
         return ClientDto.builder()
@@ -39,9 +39,11 @@ public class ClientDto {
                 .email(client.getEmail())
                 .cin(client.getCin())
                 .numTel(client.getNumTel())
-                .photoPermis(client.getPhotoPermis().stream()
-                        .map(img -> "http://localhost:2020/"+APP_ROUTE+"/client/" + client.getId() + "/images/" + (client.getPhotoPermis().indexOf(img) ))
-                        .collect(Collectors.toList()))
+                .photoPermis(client.getPhotoPermis() != null ?
+                        client.getPhotoPermis().stream()
+                                .map(img -> "http://localhost:2020/" + APP_ROUTE + "/client/" + client.getId() + "/images/" + client.getPhotoPermis().indexOf(img))
+                                .collect(Collectors.toList()) :
+                        new ArrayList<>())
                 .build();
     }
     //dto---> entity

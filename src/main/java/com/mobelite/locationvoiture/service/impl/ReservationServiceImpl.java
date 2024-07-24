@@ -57,6 +57,14 @@ public class ReservationServiceImpl implements ReservationService {
         reservation.setEndDate(reservationDto.getEndDate());
         reservation.setReservationStatus(reservationDto.getReservationStatus());
         // Fetch the existing client and car from the database
+        Long id = reservationDto.getClient().getId();
+        if (id ==null){
+            Client newClient = ClientDto.toEntity(reservationDto.getClient());
+            newClient = clientRepository.save(newClient);
+            newClient.addReservation(reservation);
+            reservation.setClient(newClient);
+        }
+        else{
         Client client = clientRepository.findById(reservationDto.getClient().getId())
                 .orElseGet(() -> {
                     Client newClient = ClientDto.toEntity(reservationDto.getClient());
@@ -64,7 +72,7 @@ public class ReservationServiceImpl implements ReservationService {
                     return newClient;
                 });
         client.addReservation(reservation);
-        reservation.setClient(client);
+        reservation.setClient(client);}
 
         Car car = carRepository.findById(reservationDto.getCar().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Car not found", ErrorCodes.CAR_NOT_FOUND));

@@ -27,7 +27,7 @@ public class CarDto {
     private String carburant;
     private String transmission;
     private List<String> imageUrls;
-    private List<Charge> charges;
+//    private List<Charge> charges;
 
     private Boolean disponibilite;
 
@@ -48,7 +48,7 @@ public class CarDto {
                         .collect(Collectors.toList()))
                 .disponibilite(car.getDisponibilite())
                 .carburant(car.getCarburant())
-                .charges(car.getCharges())
+//                .charges(car.getCharges())
                 .build();
     }
 
@@ -67,7 +67,7 @@ public class CarDto {
                 .anneemodele(carDto.getAnneemodele())
                 .disponibilite(carDto.getDisponibilite())
                 .carburant(carDto.getCarburant())
-                .charges(carDto.getCharges())
+//                .charges(carDto.getCharges())
                 .build();
     }
 }
