@@ -196,4 +196,9 @@ public class ClientServiceImpl implements ClientService {
 
         return clientRepository.save(exictingClient);
     }
+
+    @Override
+    public boolean clientExistsByEmail(String email) {
+        return !clientRepository.findByEmail(email).isEmpty();
+    }
 }

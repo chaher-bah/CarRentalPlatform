@@ -21,4 +21,5 @@ public interface ClientService {
     List<ClientDto> getClientByNomOrPrenom(String nom, String prenom);
     Client add(Client client);
     Client update(Long id,Client client,List<MultipartFile> imagefiles);
+    boolean clientExistsByEmail(String email);
 }

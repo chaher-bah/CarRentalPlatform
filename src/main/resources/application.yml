@@ -35,3 +35,10 @@ spring:
       max-file-size: 100MB
 server:
   port: 2020
+keycloak:
+  realm: LocatioVoitures
+  auth-server-url: http://localhost:8080/auth
+  resource: java-client
+  credentials:
+    secret: BUKDrsqI3eZd2y6CxevGMbUvHB1MCjNY
+  bearer-only: true

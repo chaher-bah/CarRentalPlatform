@@ -16,7 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.mobelite.locationvoiture.utils.constants.APP_ROUTE;
 
@@ -68,6 +70,13 @@ public class ClientRestController {
     @GetMapping(APP_ROUTE+"/client/email/{email}")
     public ResponseEntity<List<ClientDto>> getClientByEmail(@PathVariable("email") String email){
         return new ResponseEntity<>(clientService.getClientByEmail(email), HttpStatus.OK);
+    }
+    @GetMapping(APP_ROUTE+"/client/check")
+    public ResponseEntity<Map<String, Boolean>> checkClientExists(@RequestParam String email) {
+        boolean exists = clientService.clientExistsByEmail(email);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("exists", exists);
+        return ResponseEntity.ok(response);
     }
     /*
     @get the client by his cin /passsport number if not tunien
