@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface clientRepository extends JpaRepository<Client, Long> {
     @Query("select c from Client c where c.email = ?1")
-    List<Client> findByEmail(String email);
+    Client findByEmail(String email);
 
     @Query("select c from Client c where c.cin = ?1")
     List<Client> findByCin(String cin);

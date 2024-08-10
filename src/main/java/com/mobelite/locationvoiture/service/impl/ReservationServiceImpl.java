@@ -47,40 +47,42 @@ public class ReservationServiceImpl implements ReservationService {
     }
     @Override
     public ReservationDto save(ReservationDto reservationDto) {
+        // Validate the reservation DTO
         List<String> errors = ReservationValidator.validation(reservationDto);
         if (!errors.isEmpty()) {
             log.error("Reservation Validation errors: {}", errors);
             throw new EntityNotValidException("L'entité reservation n'est pas valide", ErrorCodes.RESERVATION_NOT_VALID, errors);
         }
+
+        // Convert the DTO to the Reservation entity
         Reservation reservation = ReservationDto.toEntity(reservationDto);
         reservation.setStartDate(reservationDto.getStartDate());
         reservation.setEndDate(reservationDto.getEndDate());
         reservation.setReservationStatus(reservationDto.getReservationStatus());
-        // Fetch the existing client and car from the database
-        Long id = reservationDto.getClient().getId();
-        if (id ==null){
-            Client newClient = ClientDto.toEntity(reservationDto.getClient());
-            newClient = clientRepository.save(newClient);
-            newClient.addReservation(reservation);
-            reservation.setClient(newClient);
-        }
-        else{
-        Client client = clientRepository.findById(reservationDto.getClient().getId())
-                .orElseGet(() -> {
-                    Client newClient = ClientDto.toEntity(reservationDto.getClient());
-                    newClient = clientRepository.save(newClient);
-                    return newClient;
-                });
-        client.addReservation(reservation);
-        reservation.setClient(client);}
 
+        // Check if the client with the given email already exists
+        String clientEmail = reservationDto.getClient().getEmail();
+        Client client = clientRepository.findByEmail(clientEmail);
+
+        if (client == null) {
+            // If the client does not exist, create a new client
+            client = ClientDto.toEntity(reservationDto.getClient());
+            client = clientRepository.save(client);
+        }
+
+        // Associate the reservation with the client
+        client.addReservation(reservation);
+        reservation.setClient(client);
+
+        // Fetch the car from the database
         Car car = carRepository.findById(reservationDto.getCar().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Car not found", ErrorCodes.CAR_NOT_FOUND));
         reservation.setCar(car);
 
-        reservation.getClient().addReservation(reservation);
+        // Save the reservation to the database
         return ReservationDto.fromEntity(reservationRepository.save(reservation));
     }
+
 
     @Override
     public ReservationDto getReservation(Long id) {

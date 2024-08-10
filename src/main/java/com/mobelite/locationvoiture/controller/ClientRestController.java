@@ -68,7 +68,7 @@ public class ClientRestController {
     @Get the client by his email
      */
     @GetMapping(APP_ROUTE+"/client/email/{email}")
-    public ResponseEntity<List<ClientDto>> getClientByEmail(@PathVariable("email") String email){
+    public ResponseEntity<ClientDto> getClientByEmail(@PathVariable("email") String email){
         return new ResponseEntity<>(clientService.getClientByEmail(email), HttpStatus.OK);
     }
     @GetMapping(APP_ROUTE+"/client/check")

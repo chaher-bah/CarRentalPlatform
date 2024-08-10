@@ -107,19 +107,17 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<ClientDto> getClientByEmail(String email) {
+    public ClientDto getClientByEmail(String email) {
         if (!StringUtils.hasLength(email)){
             log.error("Client email is null");
             return null;
         }
-        List<Client> clients = clientRepository.findByEmail(email);
-        if (clients.isEmpty()) {
+        Client clientFound = clientRepository.findByEmail(email);
+        if (clientFound == null) {
             throw new EntityNotFoundException("L'entite Client avec l'email " + email + " n'exicte pas dans le BD", ErrorCodes.CLIENT_NOT_FOUND);
         }
 
-        return clients.stream()
-                .map(ClientDto::fromEntity)
-                .collect(Collectors.toList());
+        return ClientDto.fromEntity(clientFound);
     }
 
     @Override
@@ -199,6 +197,6 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public boolean clientExistsByEmail(String email) {
-        return !clientRepository.findByEmail(email).isEmpty();
+        return clientRepository.findByEmail(email) !=null;
     }
 }
